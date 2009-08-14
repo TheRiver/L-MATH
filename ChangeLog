@@ -1,0 +1,126 @@
+2009-05-20  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* package.lisp (#:create-rotation-from-view-to-view): Exported the
+	symbol.
+	
+	* rotations.lisp (create-rotation-from-view-to-view): Creates a
+	rotation matrix that will rotate one vector on to another.
+
+	* package.lisp (#:create-rotation-from-view): Exported
+	CREATE-ROTATION-FROM-VIEW.
+
+	* rotations.lisp (fill-row): A non-exported macro that allows for
+	filling in rows of a matrix while constructing one.
+	(create-rotation-from-view): A new function that creates rotation
+	matrices given a view direction and a global up vector.
+
+	* package.lisp (#:matrix-elt): Added MATRIX-ELT to the list of
+	exported package symbols.
+
+	* vector.lisp (print-object): Updated to print vectors using only
+	3 places after the decimal point.
+
+	* matrix.lisp (print-object): updated to print matrices using only
+	3 places after the decimal point.
+
+2009-04-20  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (to-vector): Created a generic function to convert
+	objects of various types to vectors.
+	(to-vector): Created a method that converts vectors into vectors. 
+	(to-vector): Created a method to convert lists into vectors.
+
+2009-04-06  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (normalise!): Put in a test to ensure that we don't
+	attempt to normalise vectors of length 0.
+	(normalise): As above: put in a test to ensure that we don't
+	attempt to normalise vectors of length 0.
+
+2009-03-05  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (length): Added a way to tell the length of a vector
+	represented as a list.
+
+2009-03-04  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (x): Added a method that will act on lists, as FIRST
+	does.
+	(setf x): An appropriate setf to work with lists.
+	(y): Added a method to act on lists, as x above.
+	(setf y): To set the y of a list.
+	(z): Added a method to act on lists, as x above.
+	(setf z): To set the z of a list.
+
+2009-02-26  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector-operations.lisp: New file where various vector operations
+	will be moved to and implemented.
+	(dot-product): Moved here from vector.lisp. A test to ensure that
+	the vectors are the correct dimensions has been added.
+	(cross-product): Moved here from vector.lisp. Tests for
+	dimensionality have been added.
+	(euclidean-distance): Calculates the euclidean distance between
+	two vectors.
+	(euclidean-distance): Provide a function to calculate the
+	euclidean distance between two numbers.
+
+2009-02-16  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (cross-product): Added a function to calculate the
+	vector cross-product for 3-vectors.
+
+2009-02-10  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* matrix.lisp (transpose): Created a new generic function which
+	returns the transpose of a matric.
+
+2008-11-25  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* operations.lisp (-): Fixed a bug allowing unary lm:- to operate
+	as expected on VECTOR and MATRIX objects. In other words, it now
+	correctly negates these objects, rather than raising a condition.
+
+	* vector.lisp (copy): Provide an implementation for VECTORs.
+
+	* matrix.lisp (negate): Provide an implementation for MATRIX
+	objects.
+	(copy): Provide a method to copy MATRIX objects.
+
+	* generics.lisp (copy): Created a generic function that returns a
+	copy of the objects that it is given.
+
+	* matrix.lisp (negate!): Added an implementation of NEGATE! for
+	MATRIXs.
+
+	* vector.lisp (negate!): Added an implementation of the NEGATE!
+	generic function for VECTORs.
+
+	* generics.lisp (negate!): Added a destructive generic method
+	which returns the additive inverse of an item.
+
+	* vector.lisp (negate): Added an implementation of NEGATE for the
+	VECTOR class.
+
+	* generics.lisp (negate): Created a generic method which is meant
+	to return the additive inverse of an item. Provided an
+	implementation for all CL NUMBERs.
+
+	* rotations.lisp (create-rotation-matrix): Added a function which
+	can be given a rotation frame and will supply the necessary
+	rotation matrix to rotate into that frame.
+
+2008-08-10  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* interpolate.lisp: Add the file. Should contain all the various
+	interpolation methods that I will require.
+	(linear-interpolation): Interpolates between two points, using a
+	parameteric line equation.
+
+2008-08-08  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (dot-product): Added a function to calculate the dot
+	product between two vectors.
+	(dot-product): Added tests to ensure that the vectors are of the
+	same length.
+
