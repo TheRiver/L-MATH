@@ -19,11 +19,20 @@
 (defmethod test-dimensions ((lhs vector) (rhs vector) &key)
   (etest-dimensions (length lhs) (length rhs)))
 
+(defmethod test-dimensions ((lhs list) (rhs list) &key)
+  (etest-dimensions (cl:length lhs) (cl:length rhs)))
+
 (defmethod test-dimensions ((lhs matrix) (rhs vector) &key)
   (etest-dimensions (matrix-cols lhs) (length rhs)))
 
 (defmethod test-dimensions ((lhs vector) (rhs matrix) &key)
   (etest-dimensions (length lhs) (matrix-rows rhs)))
+
+(defmethod test-dimensions ((lhs matrix) (rhs list) &key)
+  (etest-dimensions (matrix-cols lhs) (cl:length rhs)))
+
+(defmethod test-dimensions ((lhs list) (rhs matrix) &key)
+  (etest-dimensions (cl:length lhs) (matrix-rows rhs)))
 
 (defmethod test-dimensions((lhs matrix) (rhs matrix)
 			   &key (transpose-rhs nil) (both t))

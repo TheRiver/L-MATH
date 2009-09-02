@@ -11,6 +11,13 @@ of the generic methods defined below, such as c+"
 	   (with-slots (data) result
 	     (map-into data #',function lhs-data rhs-data))
 	   result)))))
+
+(defmacro create-list-operation-method (name function)
+  "Generates a method, such as c+, which operates on common lisp
+lists, treating them as if they were vectors."
+  `(defmethod ,name ((lhs list) (rhs list))
+     (test-dimensions lhs rhs)
+     (mapcar #',function lhs rhs)))
   
 (defgeneric c+ (lhs rhs)
   (:documentation "Adds two objects together.")
@@ -37,11 +44,15 @@ of the generic methods defined below, such as c+"
       (do-each-vector-element (el rhs :index-symbol i)
 	(setf (elt result i) (cl:* el lhs)))
       result))
+  (:method ((lhs number) (rhs list))
+    (loop for i in rhs collect (cl:* lhs i)))
   (:method ((lhs vector) (rhs number))
     (let ((result (make-vector (length lhs))))
       (do-each-vector-element (el lhs :index-symbol i)
 	(setf (elt result i) (cl:* el rhs)))
-      result)))
+      result))
+  (:method ((lhs list) (rhs number))
+    (loop for i in lhs collect (cl:* i rhs))))
 
 (defgeneric c/ (lhs rhs)
   (:documentation "Divides two objects.")
@@ -54,17 +65,57 @@ of the generic methods defined below, such as c+"
       (do-each-vector-element (el rhs :index-symbol i)
 	(setf (elt result i) (cl:/ el lhs)))
       result))
+  (:method ((lhs number) (rhs list))
+    (loop for i in rhs collect (cl:/ i lhs)))
   (:method ((lhs vector) (rhs number))
     (let ((result (make-vector (length lhs))))
       (do-each-vector-element (el lhs :index-symbol i)
 	(setf (elt result i) (cl:/ el rhs)))
-      result)))
+      result))
+  (:method ((lhs list) (rhs number))
+    (loop for i in lhs collect (cl:/ i rhs))))
 
 (create-vector-operation-method c+ cl:+)	; Add two vector.
 (create-vector-operation-method c- cl:-)	; Subtract two vectors.
 (create-vector-operation-method c* cl:*)	; multiplies two vectors.
 (create-vector-operation-method c/ cl:/)	; divides two vectors.
 
+(create-list-operation-method c+ cl:+)	; Add two lists.
+(create-list-operation-method c- cl:-)	; Subtract two lists.
+(create-list-operation-method c* cl:*)	; multiplies two lists.
+(create-list-operation-method c/ cl:/)	; divides two lists.
+
+(defmethod c+ (lhs (rhs list))
+  "Converts lists to vectors when performing mixed type operations."
+  (c+ lhs (make-vector (length rhs) :initial-elements rhs)))
+
+(defmethod c+ ((lhs list) rhs)
+  "Converts lists to vectors when performing mixed type operations."
+  (c+ rhs lhs))
+
+(defmethod c* (lhs (rhs list))
+  "Converts lists to vectors when performing mixed type operations."
+  (c* lhs (make-vector (length rhs) :initial-elements rhs)))
+
+(defmethod c* ((lhs list) rhs)
+  "Converts lists to vectors when performing mixed type operations."
+  (c* rhs lhs))
+
+(defmethod c- (lhs (rhs list))
+  "Converts lists to vectors when performing mixed type operations."
+  (c- lhs (make-vector (length rhs) :initial-elements rhs)))
+
+(defmethod c- ((lhs list) rhs)
+  "Converts lists to vectors when performing mixed type operations."
+  (c- (make-vector (length lhs) :initial-elements lhs) rhs))
+
+(defmethod c/ (lhs (rhs list))
+  "Converts lists to vectors when performing mixed type operations."
+  (c/ lhs (make-vector (length rhs) :initial-elements rhs)))
+
+(defmethod c/ ((lhs list) rhs)
+  "Converts lists to vectors when performing mixed type operations."
+  (c/ (make-vector (length lhs) :initial-elements lhs) rhs))
 
 (defmethod c* ((lhs matrix) (rhs vector))
   (test-dimensions lhs rhs)
@@ -91,6 +142,8 @@ of the generic methods defined below, such as c+"
       (dotimes (i (matrix-cols lhs))
 	(setf el (cl:+ el (cl:* (matrix-elt lhs row i) (matrix-elt rhs i col))))))
     result))
+
+
   
 
 ;;;---------------------------------------------------
