@@ -1,3 +1,22 @@
+2009-09-02  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (negate): Added a method to return the additive
+	inverse of a list.
+
+	* operations.lisp: Added addition, subtraction, multiplication and
+	division operations on lists, treating them as vectors. Also
+	includes a mechanic to cast lists up to vectors when required.
+
+	* operations.lisp (create-list-operation-method): Added a macro to
+	define vector operations, such as addition and subtraction, on
+	lists.
+
+	* tests.lisp (test-dimensions): Added a test to test the
+	dimensions of lists in various operations.
+
+	* conditions.lisp (operation-not-supported): Fixed a bug that
+	stopped this condition from being reported.
+
 2009-05-20  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* package.lisp (#:create-rotation-from-view-to-view): Exported the

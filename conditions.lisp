@@ -33,5 +33,5 @@
 		   :reader operation-not-suported-operation-name))
   (:report (lambda (condition stream)
 	     (apply #'format stream
-		    "Attempted to perform the unknown operation ~a "
-		    (operation-not-suported-operation-name condition)))))
+		    "Attempted to perform an unsupported operation using operator ~s "
+		    (list (operation-not-suported-operation-name condition))))))

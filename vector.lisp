@@ -212,5 +212,10 @@
   (let ((ret (copy-vector vector)))
     (negate! ret)))
 
+(defmethod negate ((vector list))
+  "Non-destructively returns the additive inverse of the list, as if
+it were a vector."
+  (loop for i in vector collect (* -1 i)))
+
 
 
