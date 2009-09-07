@@ -22,7 +22,7 @@
 	 :reader dimension-error-dim2))
   (:report (lambda (condition stream)
 	     (apply #'format stream
-		    "The dimensions of the mathematical objects do not agree: ~a vs ~a"
+		    "The dimensions of the mathematical objects do not agree: ~a vs ~a."
 		    (list
 		     (dimension-error-dim1 condition)
 		     (dimension-error-dim2 condition))))))
@@ -30,8 +30,12 @@
 (define-condition operation-not-supported (error)
   ((operation-name :initarg :operation-name
 		   :initform "<generic operation>"
-		   :reader operation-not-suported-operation-name))
+		   :reader operation-not-suported-operation-name)
+   (extra-information :initarg :extra-information
+		      :initform nil
+		      :reader operation-not-supported-extra-information))
   (:report (lambda (condition stream)
 	     (apply #'format stream
-		    "Attempted to perform an unsupported operation using operator ~s "
-		    (list (operation-not-suported-operation-name condition))))))
+		    "Attempted to perform an unsupported operation using operator ~s. ~@[~&~A~]"
+		    (list (operation-not-suported-operation-name condition)
+			  (operation-not-supported-extra-information condition))))))
