@@ -22,21 +22,31 @@ lists, treating them as if they were vectors."
 (defgeneric c+ (lhs rhs)
   (:documentation "Adds two objects together.")
   (:method (lhs rhs)
-    (error 'operation-not-supported :operation-name '+))
+    (error 'operation-not-supported
+	   :operation-name '+
+	   :extra-information (format nil "The arguments are of type ~S and ~S."
+				      (type-of lhs)
+				      (type-of rhs))))
   (:method ((lhs number) (rhs number))
     (cl:+ lhs rhs)))
 
 (defgeneric c- (lhs rhs)
   (:documentation "Subtracts objects.")
   (:method (lhs rhs)
-    (error 'operation-not-supported :operation-name '-))
+    (error 'operation-not-supported :operation-name '-
+	   :extra-information (format nil "The arguments are of type ~S and ~S."
+				      (type-of lhs)
+				      (type-of rhs))))
   (:method ((lhs number) (rhs number))
     (cl:- lhs rhs)))
 
 (defgeneric c* (lhs rhs)
   (:documentation "multiplies two objects together.")
   (:method (lhs rhs)
-    (error 'operation-not-supported :operation-name '*))
+    (error 'operation-not-supported :operation-name '*
+	   :extra-information (format nil "The arguments are of type ~S and ~S."
+				      (type-of lhs)
+				      (type-of rhs))))
   (:method ((lhs number) (rhs number))
     (cl:* lhs rhs))
   (:method ((lhs number) (rhs vector))
@@ -57,7 +67,10 @@ lists, treating them as if they were vectors."
 (defgeneric c/ (lhs rhs)
   (:documentation "Divides two objects.")
   (:method (lhs rhs)
-    (error 'operation-not-supported :operation-name '/))
+    (error 'operation-not-supported :operation-name '/
+	   :extra-information (format nil "The arguments are of type ~S and ~S."
+				      (type-of lhs)
+				      (type-of rhs))))
   (:method ((lhs number) (rhs number))
     (cl:/ lhs rhs))
   (:method ((lhs number) (rhs vector))
