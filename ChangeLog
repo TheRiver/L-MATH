@@ -1,3 +1,13 @@
+2009-09-07  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* operations.lisp: Added type information when signalling
+	conditions of type OPERATION-NOT-SUPPORTED to give more
+	information to callers of c+, c-, c* and c/
+
+	* conditions.lisp (operation-not-supported): Updated the condition
+	to be able to supply extra information as to why the operation
+	failed.
+
 2009-09-02  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* vector.lisp (negate): Added a method to return the additive
