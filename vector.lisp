@@ -166,17 +166,37 @@
 
 ;;;---------------------------------------------------------------------
 
-(defgeneric to-vector (item)
+(defgeneric to-vector (item &key dimension)
   (:documentation "Returns a new vector object based created from the
-  function's arguments."))
+  function's arguments. If dimension is supplied, it should be a
+  positive integer defining the dimension of the returned vector. If
+  the specified dimension is shorter than the given item, extra
+  elements are truncated. If it is longer, the new vector will be
+  padded with zero elements."))
 
-(defmethod to-vector ((item vector))
+(defmethod to-vector ((item vector) &key dimension)
   "Returns a copy of the given vector."
-  (copy-vector item))
+  (check-type dimension (or null (and integer (satisfies plusp)))
+	      "NIL, or a positive integer")
+  (cond
+    ((not dimension)
+     (copy-vector item))
+    (t
+     (let ((result (make-vector dimension)))
+       (loop
+	  for i from 0 below (min (length item)
+				  (length result))
+	  do (setf (elt result i)
+		   (elt item i)))
+       result))))
+       
+     
 
-(defmethod to-vector ((item list))
+(defmethod to-vector ((item list) &key (dimension (length item)))
   "Converts a list to a vector."
-  (make-vector (length item) :initial-elements item))
+  (check-type dimension (or null (and integer (satisfies plusp)))
+	      "NIL, or a positive integer")
+  (make-vector dimension :initial-elements item))
 
 ;;;---------------------------------------------------------------------    
 

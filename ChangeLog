@@ -1,3 +1,8 @@
+2009-09-10  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (to-vector): Added a key to specify the dimension of
+	the vector to transform the data to.
+
 2009-09-07  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* operations.lisp: Added type information when signalling
