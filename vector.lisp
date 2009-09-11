@@ -24,7 +24,9 @@
 (defgeneric elt (vector index)
   (:documentation "Returns the element of a VECTOR at the given index.")
   (:method ((vector vector) (index integer))
-    (cl:elt (slot-value vector 'data) index)))
+    (cl:elt (slot-value vector 'data) index))
+  (:method ((vector list) (index integer))
+    (cl:elt vector index)))
 
 (defsetf elt (vector index) (new-value)
   `(setf (cl:elt (slot-value ,vector 'data) ,index) ,new-value))
