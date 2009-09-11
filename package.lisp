@@ -50,7 +50,8 @@
 	   #:to-radians
 	   #:l-math-error
 	   #:dimension-error
-	   #:linear-interpolation)
+	   #:linear-interpolation
+	   #:between)
   (:shadow #:vector
 	   #:make-vector
 	   #:length
