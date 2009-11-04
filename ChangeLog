@@ -1,3 +1,18 @@
+2009-11-04  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* matrix.lisp (matrix): Updated the matrix to not store row and
+	column information separately. Added separate MATRIX-ROWS and
+	MATRIX-COLS methods to return these values.
+
+	* vector.lisp (vector): Added an :initarg and :type for the vector
+	DATA slot.
+
+	* matrix.lisp (make-load-form): Created a method for serialising
+	matrix object.
+
+	* vector.lisp (vector): Added a documentation string.
+	(make-load-form): Created a method for serialising vector objects.
+
 2009-09-11  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* vector.lisp (elt): Returns the element of a list, as though it
