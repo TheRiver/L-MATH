@@ -194,7 +194,7 @@
   (check-type dimension (or null (and integer (satisfies plusp)))
 	      "NIL, or a positive integer")
   (cond
-    ((not dimension)
+    ((or (not dimension) (= dimension (length item)))
      (copy-vector item))
     (t
      (let ((result (make-vector dimension)))
