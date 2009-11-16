@@ -1,7 +1,20 @@
 (in-package #:l-math)
 
+;;;-----------------------------------------------------------------------------
+;;; Vector class data and basic operations
+;;;-----------------------------------------------------------------------------
+
 (defclass vector ()
-  ((data :documentation "An array holding the vector's data")))
+  ((data :initarg :data
+	 :type (array float)
+	 :documentation "An array holding the vector's data"))
+  (:documentation "A mathematical vector class."))
+
+(defmethod make-load-form ((vector vector) &optional environment)
+  (declare (ignore environment))
+  `(make-instance ',(class-of vector) :data ,(slot-value vector 'data)))
+
+;;;-----------------------------------------------------------------------------
 
 (declaim (inline length))
 (defgeneric length (vector)
@@ -181,7 +194,7 @@
   (check-type dimension (or null (and integer (satisfies plusp)))
 	      "NIL, or a positive integer")
   (cond
-    ((not dimension)
+    ((or (not dimension) (= dimension (length item)))
      (copy-vector item))
     (t
      (let ((result (make-vector dimension)))
