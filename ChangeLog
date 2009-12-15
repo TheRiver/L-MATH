@@ -1,3 +1,16 @@
+2009-12-15  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (norm): Added a version of NORM to operate on lists.
+
+	* tests.lisp (test-nonzero): A test for methods to easily signal a
+	condition when its argument has a zero norm.
+
+	* conditions.lisp (zero-norm-error): Added a condition for
+	singaling when a vector argument is zero.
+
+	* vector-operations.lisp (angle-between): Added a function to
+	return the angle between two vectors.
+
 2009-11-04  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* vector.lisp (to-vector): Speed up TO-VECTOR by falling through

@@ -30,7 +30,11 @@
   (:method ((vector vector))
     (sqrt (reduce #'(lambda (x y)
 		      (cl:+ (expt x 2) y))
-		  (slot-value vector 'data) :from-end t :initial-value 0))))
+		  (slot-value vector 'data) :from-end t :initial-value 0)))
+  (:method ((vector list))
+    (sqrt (reduce #'(lambda (x y)
+		      (cl:+ (expt x 2) y))
+		  vector :from-end t :initial-value 0))))
 
 
 (declaim (inline elt))

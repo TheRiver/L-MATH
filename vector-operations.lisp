@@ -18,6 +18,15 @@
 	   for r across rhs-data
 	   sum (* l r))))))
 
+(defgeneric angle-between (lhs rhs)
+  (:documentation "Returns the angle between two vectors. The angle is
+  in radians.")
+  (:method ((lhs vector) (rhs vector))
+    (test-dimensions lhs rhs)
+    (test-nonzero lhs)
+    (test-nonzero rhs)
+    (acos (dot-product (normalise lhs) (normalise rhs)))))
+
 (declaim (inline cross-product))
 (defgeneric cross-product (lhs rhs)
   (:documentation "Calculates the cross product between 3-vectors")
