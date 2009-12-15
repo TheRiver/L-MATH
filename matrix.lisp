@@ -1,23 +1,40 @@
 (in-package #:l-math)
 
+;;;-----------------------------------------------------------------------------
+;;; Matrix class data and basic operations
+;;;-----------------------------------------------------------------------------
+
+
 (defclass matrix ()
-  ((rows :initarg :rows
-	 :initform 3
-	 :reader matrix-rows
-	 :documentation "The number of rows of the matrix.")
-   (cols :initarg :cols
-	 :initform 3
-	 :reader matrix-cols
-	 :documentation "The number of matrix columns.")
-   (data :documentation "A 2D array holding the matrix data."))
-  (:documentation "A simple matrix class."))
+  ((data :initarg :data
+	 :type (array float)
+	 :documentation "A 2D array holding the matrix data."))
+  (:documentation "A mathematical matrix class."))
+
+(defgeneric matrix-rows (matrix)
+  (:documentation "Return the number of rows in a matrix.")
+  (:method ((matrix matrix))
+    (first (array-dimensions (slot-value matrix 'data)))))
+
+(defgeneric matrix-cols (matrix)
+  (:documentation "Returns the number of columns in a matrix.")
+  (:method ((matrix matrix))
+    (second (array-dimensions (slot-value matrix 'data)))))
+
+(defmethod make-load-form ((matrix matrix) &optional environment)
+  (declare (ignore environment))
+  `(make-instance ',(class-of matrix)
+		  :data ,(slot-value matrix 'data)))
+
+;;;-----------------------------------------------------------------------------
+
 
 (defmethod initialise-data ((matrix matrix) (size-list list))
   (with-slots (data) matrix
     (setf data (make-array size-list))))
 
-(defmethod initialize-instance :after ((matrix matrix) &key)
-  (initialise-data matrix (list (matrix-rows matrix) (matrix-cols matrix))))
+(defmethod initialize-instance :after ((matrix matrix) &key (size (list 3 3)))
+  (initialise-data matrix size))
 
 (defmethod print-object ((matrix matrix) stream)
   (print-unreadable-object (matrix stream :type t)
@@ -57,19 +74,19 @@
 			row-index-symbol
 			(gensym)))
 	(data (gensym)))
-    `(with-slots ((,rows rows)
-		  (,cols cols)
-		  (,data data)) ,matrix
-       (do ((,row-symbol 0)
-	    (,col-symbol 0))
-	   ((or (>= ,row-symbol ,rows) (>= ,col-symbol ,cols)))
-	 (symbol-macrolet ((,symbol
-			    (aref ,data ,row-symbol ,col-symbol)))
-	   ,@body)
-	 (incf ,col-symbol)
-	 (when (= ,col-symbol ,cols)
-	   (setf ,col-symbol 0)
-	   (incf ,row-symbol))))))
+    `(with-accessors ((,rows matrix-rows)
+		      (,cols matrix-cols)) ,matrix
+       (with-slots ((,data data)) ,matrix
+	 (do ((,row-symbol 0)
+	      (,col-symbol 0))
+	     ((or (>= ,row-symbol ,rows) (>= ,col-symbol ,cols)))
+	   (symbol-macrolet ((,symbol
+			      (aref ,data ,row-symbol ,col-symbol)))
+	     ,@body)
+	   (incf ,col-symbol)
+	   (when (= ,col-symbol ,cols)
+	     (setf ,col-symbol 0)
+	     (incf ,row-symbol)))))))
 
 (defmacro do-each-matrix-element-2
     ((lhs-symbol rhs-symbol lhs-matrix rhs-matrix &key (transpose-rhs t))
@@ -84,41 +101,41 @@
 	(rhs-j (gensym))
 	(rhs-i (gensym))
 	(rhs-data (gensym)))
-    `(with-slots ((,lhs-rows rows)
-		  (,lhs-cols cols)
-		  (,lhs-data data)) ,lhs-matrix
-       (with-slots ((,rhs-rows rows)
-		    (,rhs-cols cols)
-		    (,rhs-data data)) ,rhs-matrix
-	 (do ((,lhs-i 0)
-	      (,lhs-j 0)
-	      (,rhs-i 0)
-	      (,rhs-j 0))
-	     ((or (>= ,lhs-i ,lhs-rows) (>= ,lhs-j ,lhs-cols)))
-	   (symbol-macrolet ((,lhs-symbol
-			      (aref ,lhs-data ,lhs-i ,lhs-j))
-			     (,rhs-symbol
-			      (aref ,rhs-data ,rhs-i ,rhs-j)))
-	     ,@body)
-	   (incf ,lhs-j)
-	   ,(if transpose-rhs
-		`(incf ,rhs-i)
-		`(incf ,rhs-j))
-	   (when (= ,lhs-j ,lhs-cols)
-	     ,(if transpose-rhs
-		  `(progn
-		    (setf ,rhs-i 0)
-		    (incf ,rhs-j))
-		  `(progn
-		     (setf ,rhs-j 0)
-		     (incf ,rhs-i)))
-	     (setf ,lhs-j 0)
-	     (incf ,lhs-i)))))))
+    `(with-accessors ((,lhs-rows matrix-rows)
+		      (,lhs-cols matrix-cols)) ,lhs-matrix
+       (with-slots ((,lhs-data data)) ,lhs-matrix
+	 (with-accessors ((,rhs-rows matrix-rows)
+			  (,rhs-cols matrix-cols)) ,rhs-matrix
+	   (with-slots ((,rhs-data data)) ,rhs-matrix
+	     (do ((,lhs-i 0)
+		  (,lhs-j 0)
+		  (,rhs-i 0)
+		  (,rhs-j 0))
+		 ((or (>= ,lhs-i ,lhs-rows) (>= ,lhs-j ,lhs-cols)))
+	       (symbol-macrolet ((,lhs-symbol
+				  (aref ,lhs-data ,lhs-i ,lhs-j))
+				 (,rhs-symbol
+				  (aref ,rhs-data ,rhs-i ,rhs-j)))
+		 ,@body)
+	       (incf ,lhs-j)
+	       ,(if transpose-rhs
+		    `(incf ,rhs-i)
+		    `(incf ,rhs-j))
+	       (when (= ,lhs-j ,lhs-cols)
+		 ,(if transpose-rhs
+		      `(progn
+			 (setf ,rhs-i 0)
+			 (incf ,rhs-j))
+		      `(progn
+			 (setf ,rhs-j 0)
+			 (incf ,rhs-i)))
+		 (setf ,lhs-j 0)
+		 (incf ,lhs-i)))))))))
   
   
 (defun make-matrix (rows cols &key initial-elements)
   "Creates a matrix of the given dimensions."
-  (let ((matrix (make-instance 'matrix :rows rows :cols cols)))
+  (let ((matrix (make-instance 'matrix :size (list rows cols))))
     (when initial-elements
       (when (/= (cl:length initial-elements) (* rows cols))
 	(error
@@ -168,3 +185,7 @@
       (do-each-matrix-element-2 (lhs rhs matrix transpose)
 	(setf rhs lhs))
       transpose)))
+
+;;;-------------------------------------------------------------
+
+  
