@@ -1,3 +1,9 @@
+2009-12-16  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector-operations.lisp (angle-between): Increased precision in
+	this function to use double-floats. Now the angle between 90
+	degree vectors is reported as exactly 90 degrees.
+
 2009-12-15  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* vector.lisp (norm): Added a version of NORM to operate on lists.

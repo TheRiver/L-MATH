@@ -28,8 +28,10 @@
     (test-nonzero to)
     (let ((from (normalise from))
 	  (to (normalise to)))
-      (- (atan (y to) (x to))
-	 (atan (y from) (x from))))))
+      (- (atan (coerce (y to) 'double-float)
+	       (coerce (x to) 'double-float))
+	 (atan (coerce (y from) 'double-float)
+	       (coerce (x from) 'double-float))))))
 
 (declaim (inline cross-product))
 (defgeneric cross-product (lhs rhs)
