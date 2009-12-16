@@ -6,7 +6,7 @@
 
 (defclass vector ()
   ((data :initarg :data
-	 :type (array float)
+	 :type (array double-float)
 	 :documentation "An array holding the vector's data"))
   (:documentation "A mathematical vector class."))
 
@@ -170,18 +170,23 @@
 (defgeneric vector= (lhs rhs &key tolerance)
   (:documentation "Returns t iff the two vectors are equal to within a
   given tolerance.")
-  (:method ((lhs vector) (rhs vector) &key (tolerance 0.0))
-    (with-slots ((lhs-data data)) lhs
-      (with-slots ((rhs-data data)) rhs
-	(cond
-	  ((/= (cl:length lhs-data) (cl:length rhs-data))
-	   nil)
-	  (t
-	   (if (/= tolerance 0)
-	       (every #'(lambda (x y)
-			  (<= (abs (- x y)) tolerance))
-		      lhs-data rhs-data)
-	       (every #'= lhs-data rhs-data))))))))
+  (:method (lhs rhs  &key (tolerance 0.0))
+    (declare (type (or vector list) lhs rhs))
+    (symbol-macrolet ((lhs-data (if (listp lhs)
+				    lhs
+				    (slot-value lhs 'data)))
+		      (rhs-data (if (listp rhs)
+				    rhs
+				    (slot-value rhs 'data))))
+      (cond
+	((/= (cl:length lhs-data) (cl:length rhs-data))
+	 nil)
+	(t
+	 (if (/= tolerance 0)
+	     (every #'(lambda (x y)
+			(<= (abs (- x y)) tolerance))
+		    lhs-data rhs-data)
+	     (every #'= lhs-data rhs-data)))))))
 
 ;;;---------------------------------------------------------------------
 

@@ -7,7 +7,7 @@
 
 (defclass matrix ()
   ((data :initarg :data
-	 :type (array float)
+	 :type (array double-float)
 	 :documentation "A 2D array holding the matrix data."))
   (:documentation "A mathematical matrix class."))
 

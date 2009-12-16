@@ -1,5 +1,11 @@
 2009-12-16  Rudy Neeser  <rudy.neeser@gmail.com>
 
+	* vector.lisp (vector=): Modifed to allow lists.
+
+	* matrix.lisp (matrix): Changed precision to double-float.
+
+	* vector.lisp (vector): Changed precision to double-float.
+
 	* vector-operations.lisp (angle-between): Increased precision in
 	this function to use double-floats. Now the angle between 90
 	degree vectors is reported as exactly 90 degrees.
