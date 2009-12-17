@@ -27,7 +27,10 @@
 		     (dimension-error-dim1 condition)
 		     (dimension-error-dim2 condition))))))
 
-(define-condition operation-not-supported (error)
+(define-condition zero-norm-error (l-math-error)
+  ((format-control :initform "The given vector is of zero length.")))
+
+(define-condition operation-not-supported (l-math-error)
   ((operation-name :initarg :operation-name
 		   :initform "<generic operation>"
 		   :reader operation-not-suported-operation-name)

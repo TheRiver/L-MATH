@@ -18,6 +18,21 @@
 	   for r across rhs-data
 	   sum (* l r))))))
 
+(defgeneric angle-between (from to)
+  (:documentation "Returns the angle between two vectors. The angle is
+  in radians, and is signed. The angle represents the the angle needed
+  to transform the FROM vector to the TO vector.")
+  (:method ((from vector) (to vector))
+    (test-dimensions from to)
+    (test-nonzero from)
+    (test-nonzero to)
+    (let ((from (normalise from))
+	  (to (normalise to)))
+      (- (atan (coerce (y to) 'double-float)
+	       (coerce (x to) 'double-float))
+	 (atan (coerce (y from) 'double-float)
+	       (coerce (x from) 'double-float))))))
+
 (declaim (inline cross-product))
 (defgeneric cross-product (lhs rhs)
   (:documentation "Calculates the cross product between 3-vectors")
