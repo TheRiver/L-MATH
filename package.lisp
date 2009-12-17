@@ -13,6 +13,7 @@
 	   #:normalise
 	   #:normalise!
 	   #:dot-product
+	   #:angle-between
 	   #:euclidean-distance
 	   #:cross-product
 	   #:elt
@@ -50,6 +51,7 @@
 	   #:to-radians
 	   #:l-math-error
 	   #:dimension-error
+	   #:zero-length-error
 	   #:linear-interpolation
 	   #:between)
   (:shadow #:vector
