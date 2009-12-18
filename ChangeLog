@@ -1,11 +1,13 @@
 2009-12-18  Rudy Neeser  <rudy.neeser@gmail.com>
 
+	* package.lisp (#:l-math): Exported  *equivalence-tolerance*.
+
 	* tests.lisp (test-nonzero): Updated to
 	use *equivalence-tolerance*.
 
 	* vector.lisp (vector=): Updated to use *equivalence-tolerance*.
 
-	* operations.lisp (*equivalence-tolerance*): Added a variable that
+	* generics.lisp (*equivalence-tolerance*): Added a variable that
 	defines how similar objects should be before they are considered
 	equal.
 
