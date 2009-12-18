@@ -1,7 +1,8 @@
 (defpackage #:l-math
   (:use :common-lisp)
   (:nicknames :lm)
-  (:export #:copy
+  (:export #:*equivalence-tolerance*
+	   #:copy
 	   #:vector
 	   #:make-vector
 	   #:to-vector
