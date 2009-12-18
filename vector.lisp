@@ -167,10 +167,10 @@
   "Returns a copy of a VECTOR, just as COPY-VECTOR does."
   (copy-vector vector))
 
-(defgeneric vector= (lhs rhs &key tolerance)
-  (:documentation "Returns t iff the two vectors are equal to within a
-  given tolerance.")
-  (:method (lhs rhs  &key (tolerance 0.0))
+(defgeneric vector= (lhs rhs)
+  (:documentation "Returns t iff the two vectors are equal. Effected
+  by *equivalence-tolerance*.")
+  (:method (lhs rhs)
     (declare (type (or vector list) lhs rhs))
     (symbol-macrolet ((lhs-data (if (listp lhs)
 				    lhs
@@ -182,9 +182,9 @@
 	((/= (cl:length lhs-data) (cl:length rhs-data))
 	 nil)
 	(t
-	 (if (/= tolerance 0)
+	 (if (/= *equivalence-tolerance* 0)
 	     (every #'(lambda (x y)
-			(<= (abs (- x y)) tolerance))
+			(<= (abs (- x y)) *equivalence-tolerance*))
 		    lhs-data rhs-data)
 	     (every #'= lhs-data rhs-data)))))))
 

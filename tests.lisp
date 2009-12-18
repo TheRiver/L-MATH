@@ -53,7 +53,7 @@
 (defgeneric test-nonzero (vector &optional threshold)
   (:documentation "Throws a ZERO-LENGTH-ERROR if the given vector has
   a length close to zero.")
-  (:method (vector &optional (threshold 0.00001))
+  (:method (vector &optional (threshold *equivalence-tolerance*))
     (declare (type (or list vector) vector)
 	     (type (and number (satisfies plusp)) threshold))
     (when (< (abs (norm vector)) threshold)

@@ -1,5 +1,12 @@
 (in-package #:l-math)
 
+;;;-----------------------------------------------------------------------
+
+(defvar *equivalence-tolerance* 0.0001
+  "When objects are closer than this distance, they are considered equivalent.")
+
+;;;-----------------------------------------------------------------------
+
 (defgeneric initialise-data (item size)
   (:documentation "Initialises the DATA slot to the given
   size. Returns the vector object."))
