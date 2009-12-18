@@ -1,3 +1,14 @@
+2009-12-18  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* tests.lisp (test-nonzero): Updated to
+	use *equivalence-tolerance*.
+
+	* vector.lisp (vector=): Updated to use *equivalence-tolerance*.
+
+	* operations.lisp (*equivalence-tolerance*): Added a variable that
+	defines how similar objects should be before they are considered
+	equal.
+
 2009-12-16  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* vector.lisp (vector=): Modifed to allow lists.
