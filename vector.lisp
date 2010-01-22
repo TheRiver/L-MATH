@@ -233,7 +233,15 @@
 	(unless (= length 0)
 	  (map-into data #'(lambda (x)
 			     (/ x length)) data))))
-    vector))
+    vector)
+  (:method ((vector list))
+    "Destructively updates the vector, represented as a list, into its
+normalised version."
+    (let ((length (norm vector)))
+      (map-into vector #'(lambda (el)
+			   (/ el length))
+		vector)
+      vector)))
 
 (defgeneric normalise (vector)
   (:documentation "Returns a normalised version of the vector.")
@@ -243,7 +251,13 @@
       (unless (= length 0)
 	(do-each-vector-element (el result :index-symbol i)
 	  (setf el (/ (elt vector i) length))))
-      result)))
+      result))
+  (:method ((vector list))
+    "Returns the normalised version of a vector represented as a list."
+    (let ((length (norm vector)))
+      (loop
+	 for el in vector
+	 collect (/ el length)))))
 
 (defmethod negate! ((vector vector))
   "Destructively returns the additive inverse of a vector."
