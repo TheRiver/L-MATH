@@ -1,11 +1,31 @@
+2010-01-26  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* COPYING: Added a copy of the GPLv3.
+
+	* LICENSE: Added the beginnings of a file discussing licensing.
+
+	* README: Added the beginnings of a README file.
+
+	* vector-operations.lisp (dot-product): Dot product can now
+	operate on lists.
+	(euclidean-distance): Updated to work with lists.
+
+2010-01-22  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (normalise): Provided a version that operates on
+	lists.
+	(normalise!): Provided a version that operates on lists.
+
 2009-12-18  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* package.lisp (#:l-math): Exported  *equivalence-tolerance*.
 
 	* tests.lisp (test-nonzero): Updated to
 	use *equivalence-tolerance*.
 
 	* vector.lisp (vector=): Updated to use *equivalence-tolerance*.
 
-	* operations.lisp (*equivalence-tolerance*): Added a variable that
+	* generics.lisp (*equivalence-tolerance*): Added a variable that
 	defines how similar objects should be before they are considered
 	equal.
 
