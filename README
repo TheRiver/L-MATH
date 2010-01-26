@@ -1,0 +1,16 @@
+L-MATH
+======
+
+A library to do some simple linear algebra. Vector and matrix classes
+are available, and these can typically be mixed with lists. For
+instance:
+
+(lm:dot-product (lm:vector 1 0 1) (list 0 1 0)) => 0
+
+License
+=======
+
+See the file LICENSE for the licensing details. L-MATH is licensed
+under the GPL version 3, with additional permissions giving link
+exceptions (aka the Classpath exception).
+

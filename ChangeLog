@@ -1,3 +1,15 @@
+2010-01-26  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* COPYING: Added a copy of the GPLv3.
+
+	* LICENSE: Added the beginnings of a file discussing licensing.
+
+	* README: Added the beginnings of a README file.
+
+	* vector-operations.lisp (dot-product): Dot product can now
+	operate on lists.
+	(euclidean-distance): Updated to work with lists.
+
 2010-01-22  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* vector.lisp (normalise): Provided a version that operates on
