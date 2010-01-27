@@ -51,13 +51,18 @@
 
 ;;;-----------------------------------------------------------------------------
 
+(defmethod dimension ((vector vector))
+  "Returns the dimension of a vector."
+  (cl:length (slot-value vector 'data)))
+(defmethod dimension ((vector list))
+  "Returns the dimension of a vector represented as a list."
+  (cl:length vector))
+
 (declaim (inline length))
 (defgeneric length (vector)
-  (:documentation "Returns the vector's dimension.")
-  (:method ((vector vector))
-    (cl:length (slot-value vector 'data)))
-  (:method ((vector list))
-    (cl:length vector)))
+  (:documentation "An alias for DIMENSION")
+  (:method (vector)
+    (dimension vector)))
 
 (declaim (inline norm))
 (defgeneric norm (vector)
@@ -223,6 +228,27 @@
 		    lhs-data rhs-data)
 	     (every #'= lhs-data rhs-data)))))))
 
+(defmethod equivalent ((lhs vector) (rhs vector))
+  "Synonym for VECTOR=."
+  (vector= lhs rhs))
+
+(defmethod equivalent ((lhs list) (rhs list))
+  "Returns t iff the two lists are of the same length with equivalent
+elements."
+  (and (= (length lhs)
+	  (length rhs))
+       (every #'equivalent lhs rhs)))
+
+(defmethod equivalent ((lhs list) (rhs vector))
+  "Compares a list and a vector for equivalence."
+  (with-slots (data) rhs
+    (and (= (length lhs)
+	    (length rhs))
+	 (every #'equivalent lhs data))))
+
+(defmethod equivalent ((lhs vector) (rhs list))
+  (equivalent rhs lhs))
+
 ;;;---------------------------------------------------------------------
 
 (defgeneric to-vector (item &key dimension)
@@ -308,7 +334,13 @@ normalised version."
 (defmethod negate ((vector list))
   "Non-destructively returns the additive inverse of the list, as if
 it were a vector."
-  (loop for i in vector collect (* -1 i)))
+  (loop for i in vector collect (cl:- i)))
+
+(defmethod negate! ((vector list))
+  "Destructively returns the additive inverse of the given list."
+  (map-into vector #'(lambda (x)
+		       (cl:- x))
+	    vector))
 
 
 

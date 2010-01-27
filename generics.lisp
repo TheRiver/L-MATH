@@ -59,4 +59,27 @@ numbers. This is just a shortcut for using the cl:- function."
   NEGATE, only this version is destructive."))
 
 (defgeneric copy (item)
-  (:documentation "Returns a copy of the given item."))
+  (:documentation "Returns a copy of the given item.")
+  (:method ((item list))
+    "Returns a copy of a list."
+    (copy-seq item)))
+
+(declaim (inline dimension))
+(defgeneric dimension (object)
+  (:documentation "Returns the dimensions of a given object."))
+
+(defgeneric equivalent (lhs rhs)
+  (:documentation "Returns t iff the two objects are numerically the
+  same. Real valued objects are always compared using
+  *equivalence-tolerance*.")
+  (:method (lhs rhs)
+    "A default implementation that ensures that unrelated objects are
+    not considered equivalent."
+    nil)
+  (:method ((lhs number) (rhs number))
+    "Returns t iff two numbers are equivalent (using =)."
+    (= lhs rhs))
+  (:method ((lhs real) (rhs real))
+    "Two real values are compared for equivalence to a pre-defined
+tolerance."
+    (< (abs (- lhs rhs)) *equivalence-tolerance*)))

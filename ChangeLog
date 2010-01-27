@@ -1,3 +1,18 @@
+2010-01-27  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* matrix.lisp (matrix=): Added a function to compare matrix
+	objects.
+	(dimension): Added an implementation for MATRIX objects.
+
+	* generics.lisp (copy): Added an implementation that copies lists.
+	(equivalent): Added a generic function to test for equivalence
+	between two objects.
+
+	* vector.lisp (dimension): Renamed LENGTH to DIMENSION.
+	(length): Created a new LENGTH function that is an alias to
+	DIMENSION.
+	(negate!): Added this for lists.
+
 2010-01-26  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* COPYING: Added a copy of the GPLv3.
