@@ -51,13 +51,12 @@
 
 ;;;-----------------------------------------------------------------------------
 
-(declaim (inline dimension))
-(defgeneric dimension (vector)
-  (:documentation "Returns the vector's dimension.")
-  (:method ((vector vector))
-    (cl:length (slot-value vector 'data)))
-  (:method ((vector list))
-    (cl:length vector)))
+(defmethod dimension ((vector vector))
+  "Returns the dimension of a vector."
+  (cl:length (slot-value vector 'data)))
+(defmethod dimension ((vector list))
+  "Returns the dimension of a vector represented as a list."
+  (cl:length vector))
 
 (declaim (inline length))
 (defgeneric length (vector)

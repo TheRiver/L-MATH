@@ -56,6 +56,10 @@
   (:method ((matrix matrix))
     (second (array-dimensions (slot-value matrix 'data)))))
 
+(defmethod dimension ((matrix matrix))
+  "Returns a list giving the number of rows and columns in the matrix."
+  (list (matrix-rows matrix) (matrix-cols matrix)))
+
 (defmethod make-load-form ((matrix matrix) &optional environment)
   (declare (ignore environment))
   `(make-instance ',(class-of matrix)

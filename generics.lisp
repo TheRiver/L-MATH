@@ -64,6 +64,10 @@ numbers. This is just a shortcut for using the cl:- function."
     "Returns a copy of a list."
     (copy-seq item)))
 
+(declaim (inline dimension))
+(defgeneric dimension (object)
+  (:documentation "Returns the dimensions of a given object."))
+
 (defgeneric equivalent (lhs rhs)
   (:documentation "Returns t iff the two objects are numerically the
   same. Real valued objects are always compared using
