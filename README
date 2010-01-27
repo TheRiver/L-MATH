@@ -2,10 +2,8 @@ L-MATH
 ======
 
 L-MATH is a library to do simple linear algebra. Vector and matrix
-classes are available, and these can typically be mixed with
-lists. For instance:
-
-(lm:dot-product (lm:vector 1 0 1) (list 0 1 0)) => 0
+classes are available, as are simple linear interpolation functions
+and various operations related to creating rotation matrices.
 
 Vector
 =======
@@ -31,6 +29,10 @@ Importantly, TO-VECTOR allows the vector's length to be modified:
 (lm:to-vector (list 1 2 3) :dimension 2) => #<L-MATH:VECTOR 1.000 2.000 >
 
 (lm:to-vector (lm:vector 1 2) :dimension 3) => #<L-MATH:VECTOR 1.000 2.000 0.000 >
+
+Vectors can typically be represented as lists. For instance:
+
+(lm:dot-product (lm:vector 1 0 1) (list 0 1 0)) => 0
 
 Various operations are available for VECTOR objects. Many of these
 functions will also accept lists as VECTOR representations.
