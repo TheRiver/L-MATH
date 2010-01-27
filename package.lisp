@@ -38,13 +38,16 @@
   (:nicknames :lm)
   (:export #:*equivalence-tolerance*
 	   #:copy
+	   #:equivalent
 	   #:vector
 	   #:make-vector
 	   #:to-vector
 	   #:copy-vector
 	   #:vector=
+	   #:matrix=
 	   #:do-each-vector-element
 	   #:length
+	   #:dimension
 	   #:norm
 	   #:normalise
 	   #:normalise!

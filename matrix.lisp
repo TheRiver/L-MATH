@@ -166,7 +166,24 @@
 			 (incf ,rhs-i)))
 		 (setf ,lhs-j 0)
 		 (incf ,lhs-i)))))))))
-  
+
+(defgeneric matrix= (lhs rhs)
+  (:documentation "Returns t iff the two matrices are equal. Effected
+  by *equivalence-tolerance*.")
+  (:method ((lhs matrix) (rhs matrix))
+    (unless (and (= (matrix-rows lhs)
+		    (matrix-rows rhs))
+		 (= (matrix-cols lhs)
+		    (matrix-cols rhs)))
+      (return-from matrix= nil))
+    (do-each-matrix-element-2 (lhs-i rhs-i lhs rhs :transpose-rhs nil)
+      (unless (< (abs (- lhs-i rhs-i)) *equivalence-tolerance*)
+	(return-from matrix= nil)))
+    t))
+
+(defmethod equivalent ((lhs matrix) (rhs matrix))
+  "Synonym for MATRIX="
+  (matrix= lhs rhs))
   
 (defun make-matrix (rows cols &key initial-elements)
   "Creates a matrix of the given dimensions."

@@ -2,7 +2,7 @@ L-MATH is distributed under the GNU GPL version 3. You should have
 received a copy of the license with L-MATH (see the COPYING file); if
 not, the license is available from http://www.gnu.org/licenses/.
 
-L-MATH is distributed with an additional permission under GNU GPL
+L-MATH is distributed with an additional permission under the GNU GPL
 version 3 section 7:
 
 Linking this library statically or dynamically with other modules is
@@ -21,5 +21,3 @@ based on this library. If you modify this library, you may extend this
 exception to your version of the library, but you are not obligated to
 do so. If you do not wish to do so, delete this exception statement
 from your version.
-
-

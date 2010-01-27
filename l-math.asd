@@ -42,9 +42,9 @@
 
 (defsystem :l-math
     :description "A simple math library focused on linear algebra."
-    :version "0.1.1"
-    :author "Rudy Neeser <rudy.neeser@gmail.com>"
-    :license "GPLv3"
+    :version "0.3"
+    :author "Rudolph Neeser <rudy.neeser@gmail.com>"
+    :license "GPLv3 with Classpath Exception" 
     :components ((:file "package")
 		 (:file "conditions")
 		 (:file "generics")
