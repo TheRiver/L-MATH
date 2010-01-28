@@ -58,7 +58,10 @@ errors it is not advisable to compare floating point values
 exactly. VECTOR= uses the special variable *equivalence-tolerance* to
 define the tolerance within which two vectors are considered
 equal. *equivalence-tolerance* defaults to 0.0001, which should be
-reasonable for most applications.
+reasonable for most applications. For example:
+
+(lm:vector= (lm:vector 1 2 3) (lm:vector 1 2 3.1)) => NIL
+(lm:vector= (lm:vector 1 2 3) (lm:vector 1 2 3.00001)) => T
 
 
 (lm:elt VECTOR index)
@@ -94,7 +97,7 @@ Calculates the Euclidean distance between two vectors or two numbers.
 Matrix
 ======
 
-Matrices can be constructed using (lm:MAKE-MATRIX row col &key initial-elements
+Matrices can be constructed using (lm:MAKE-MATRIX row col &key initial-elements)
 
 (lm:make-matrix 2 3 :initial-elements '(1 0 0
 		    		        0 1 0))
@@ -199,7 +202,9 @@ General Operations
 (lm:equivalent LHS RHS)
 Returns t iff the two objects are numerically equivalent. Numbers are
 tested using =. Real-valued objects (REAL types, VECTORs and MATRIXs)
-are compared to each other using a tolerance *equivalence-tolerance*.
+are compared to each other using a tolerance
+*equivalence-tolerance*. VECTORs and MATRIX objects are compared using
+VECTOR= and MATRIX=.
 
 
 (lm:copy OBJECT)
@@ -242,7 +247,7 @@ L-MATH-ERROR: A general condition from which all error conditions for
 the package inherit.
 
 DIMENSION-ERROR: This is signalled when an operation is requested on
-objects whose dimensions don't agree.
+objects whose dimensions are inappropriate.
 
 ZERO-NORM-ERROR: This is signalled on operations which do not make
 sense for vectors with zero norm.
@@ -279,6 +284,13 @@ installable:
 
 (require 'asdf-install)
 (asdf-install:install 'l-math)
+
+Reporting Bugs and Getting Help
+===============================
+
+Bugs can be reported to http://bugs.launchpad.net/l-math. If you have
+any questions concerning how to use the library, you can ask them at
+http://answers.launchpad.net/l-math. 
 
 License
 =======
