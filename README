@@ -296,12 +296,12 @@ License
 =======
 
 See the file LICENSE for the licensing details. In brief, L-MATH is
-licensed under the GPL version 3, with additional permissions giving
-link exceptions (aka the Classpath exception). Importantly for a
-Common Lisp library, this exception allows you to use this GPLed
-library in your application regardless of the licenses of the compiler
-and the other libraries you are using (as long, of course, as you
-satisfy those licenses).
+licensed under the GPL, with additional permissions giving link
+exceptions (aka the Classpath exception). Importantly for a Common
+Lisp library, this exception allows you to use this GPLed library in
+your application regardless of the licenses of the compiler and the
+other libraries you are using (as long, of course, as you satisfy
+those licenses).
 
 Note that this does not remove the obligation that the rest of the GPL
 places on you, such as supplying the source code of this library.
