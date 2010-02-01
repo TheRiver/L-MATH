@@ -1,3 +1,12 @@
+2010-01-30  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* LICENSE: Updated to ensure that the license is "GPL, version 3,
+	and later versions". This was originally intended, and is is the
+	text in each individual source file.
+
+	* README: Some minor updates relating to how the LICENSE is
+	explained.
+
 2010-01-27  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* matrix.lisp (matrix=): Added a function to compare matrix
