@@ -1,3 +1,8 @@
+2010-02-19  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* interpolate.lisp (linear-interpolation): Added a method so that
+	this function can operate on numbers.
+
 2010-01-30  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* LICENSE: Updated to ensure that the license is "GPL, version 3,
