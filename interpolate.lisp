@@ -46,7 +46,9 @@
   (:method (start end (t-val real))
     (declare (type (or vector list) start end))
     (let ((direction (- end start)))
-      (+ start (* direction t-val)))))
+      (+ start (* direction t-val))))
+  (:method ((start number) (end number) (t-val real))
+    (+ start (* (abs (- start end)) t-val))))
 
 (defgeneric between (start end)
   (:documentation "Calculates the vector half way between two other
