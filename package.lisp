@@ -92,7 +92,9 @@
 	   #:dimension-error
 	   #:zero-length-error
 	   #:linear-interpolation
-	   #:between)
+	   #:between
+	   #:normal
+	   #:make-random-vector)
   (:shadow #:vector
 	   #:make-vector
 	   #:length

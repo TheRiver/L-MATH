@@ -1,3 +1,12 @@
+2010-02-22  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* random.lisp (normal): Added a function to create normally
+	distributed values.
+	(make-random-vector): Added a function to create a vector filled
+	with random values.
+	(make-random-matrix): Added a function to create a matrix filled
+	with random data.
+
 2010-02-19  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* interpolate.lisp (linear-interpolation): Added a method so that
