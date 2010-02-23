@@ -1,3 +1,10 @@
+2010-02-23  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* interpolate.lisp (between): Modifed to take numbers as
+	arguments.
+	(linear-interpolation): Fixed a bug in the method accepting
+	numbers as arguments.
+
 2010-02-22  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* random.lisp (normal): Added a function to create normally
