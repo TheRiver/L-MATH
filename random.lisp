@@ -1,3 +1,5 @@
+(in-package #:l-math)
+
 ;;; L-MATH: a library for simple linear algebra.
 ;;; Copyright (C) 2009-2010 Rudolph Neeser
 ;;;
@@ -33,73 +35,48 @@
 ;;; do so. If you do not wish to do so, delete this exception statement
 ;;; from your version.
 
-(defpackage #:l-math
-  (:use :common-lisp)
-  (:nicknames :lm)
-  (:export #:*equivalence-tolerance*
-	   #:copy
-	   #:equivalent
-	   #:vector
-	   #:make-vector
-	   #:to-vector
-	   #:copy-vector
-	   #:vector=
-	   #:matrix=
-	   #:do-each-vector-element
-	   #:length
-	   #:dimension
-	   #:norm
-	   #:normalise
-	   #:normalise!
-	   #:dot-product
-	   #:angle-between
-	   #:euclidean-distance
-	   #:cross-product
-	   #:elt
-	   #:x
-	   #:y
-	   #:z
-	   #:w
-	   #:matrix
-	   #:matrix-rows
-	   #:matrix-cols
-	   #:make-matrix
-	   #:matrix-elt
-	   #:make-identity
-	   #:do-each-matrix-element
-	   #:do-each-matrix-element-2
-	   #:test-dimensions
-	   #:c+
-	   #:c-
-	   #:negate
-	   #:transpose
-	   #:negate!
-	   #:c*
-	   #:c/
-	   #:*
-	   #:/
-	   #:-
-	   #:+
-	   #:yaw-matrix
-	   #:pitch-matrix
-	   #:roll-matrix
-	   #:create-rotation-matrix
-	   #:create-rotation-from-view
-	   #:create-rotation-from-view-to-view
-	   #:to-degrees
-	   #:to-radians
-	   #:l-math-error
-	   #:dimension-error
-	   #:zero-length-error
-	   #:linear-interpolation
-	   #:between
-	   #:normal
-	   #:make-random-vector)
-  (:shadow #:vector
-	   #:make-vector
-	   #:length
-	   #:elt
-	   #:*
-	   #:/
-	   #:-
-	   #:+))
+;;;-----------------------------------------------------------------------------
+;;; Functions for creating random data.
+;;;-----------------------------------------------------------------------------
+
+(defun normal (&key (mean 0) (sd 1) (min nil) (max nil) (state *random-state*))
+  "Returns a normally distributed random variable with the given mean
+and standard-deviation. If min or max is given, the random number is
+no smaller than min and no larger than max."
+  (flet ((min-fun (val)
+	   (if (and min (< val min))
+	       min
+	       val))
+	 (max-fun (val)
+	   (if (and max (> val max))
+	       max
+	       val)))
+    (min-fun (max-fun (+ mean
+			 (* sd
+			    (sqrt (* -2 (log (random 1.0 state))))
+			    (cos (* 2 pi (random 1.0 state)))))))))
+
+(defun make-random-vector (dimension &key (noise #'normal))
+  "Creates a VECTOR of the given dimension filled with random values
+  obtained by calling NOISE once for each element in the VECTOR. By
+  default, this uses normally distributed random numbers with a mean
+  of 0 and standard deviation of 1."
+  (declare (type (integer 1) dimension)
+	   (type function noise))
+  (let ((result (make-vector dimension)))
+    (do-each-vector-element (el result)
+      (setf el (funcall noise)))
+    result))
+
+(defun make-random-matrix (rows cols &key (noise #'normal))
+  "Creates a MATRIX of the ROWS × COLS dimension filled with random
+  values obtained by calling NOISE once for each element in the
+  MATRIX. By default, this uses normally distributed random numbers
+  with a mean of 0 and standard deviation of 1."
+  (declare (type (integer 1) rows cols)
+	   (type function noise))
+  (let ((result (make-matrix rows cols)))
+    (do-each-matrix-element (el result)
+      (setf el (funcall noise)))
+    result))
+  
