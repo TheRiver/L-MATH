@@ -135,6 +135,7 @@ no smaller than min and no larger than max."
   "Calculates Perlin noise. As input, it takes a 3-vector. It returns
   a random value between -1 and 1."
   (declare (type (or vector list) point))
+  (test-dimensions point 3)
   (unless *perlin-gradients*
     (initialize-noise3))
   (multiple-value-bind (i u) (truncate (x point))
