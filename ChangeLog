@@ -1,3 +1,17 @@
+2010-02-27  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* random.lisp (noise3): A 3D perlin noise implementation.
+	(initialize-noise3): Added a method to initialise the data used by
+	NOISE3.
+	(*perlin-gradients*, *perlin-permutations*): These store the data
+	needed for the perlin noise generator.
+	(draw-noise3-output): A functio that allows the user to output an
+	image of the perlin noise function.
+
+	* conditions.lisp (required-dimension-error): Added a new subclass
+	of dimension-error. Allows operations requiring specific
+	dimensions to report errors.
+
 2010-02-23  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* interpolate.lisp (between): Modifed to take numbers as
