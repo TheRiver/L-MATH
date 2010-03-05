@@ -94,6 +94,9 @@
 	   #:linear-interpolation
 	   #:between
 	   #:normal
+	   #:noise3
+	   #:initialize-noise3
+	   #:noise3
 	   #:make-random-vector)
   (:shadow #:vector
 	   #:make-vector

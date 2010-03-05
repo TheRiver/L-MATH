@@ -45,6 +45,14 @@
        (unless (= ,lhs-val-sym ,rhs-val-sym)
 	 (error 'dimension-error :dim1 ,lhs-val-sym :dim2 ,rhs-val-sym)))))
 
+(defmacro etest-needed-vector-dimension (vector dimension)
+  (let ((vector-val-sym (gensym))
+	(dimension-val-sym (gensym)))
+    `(let ((,vector-val-sym (length ,vector))
+	   (,dimension-val-sym ,dimension))
+       (unless (= ,vector-val-sym ,dimension-val-sym)
+	 (error 'required-dimension-error :dim1 ,vector-val-sym :dim2 ,dimension-val-sym)))))
+
 (defgeneric test-dimensions (lhs rhs &key)
   (:documentation "Throws an error if the two objects do not agree in
   dimensions. If the second object is a matrix, it is possible to
@@ -54,8 +62,16 @@
 (defmethod test-dimensions ((lhs vector) (rhs vector) &key)
   (etest-dimensions (length lhs) (length rhs)))
 
+(defmethod test-dimensions ((vector vector) (dimension number) &key)
+  "Ensure that the given vector has the specified dimension."
+  (etest-needed-vector-dimension vector dimension))
+
 (defmethod test-dimensions ((lhs list) (rhs list) &key)
   (etest-dimensions (cl:length lhs) (cl:length rhs)))
+
+(defmethod test-dimensions ((vector list) (dimension number) &key)
+  "Ensure that the given vector has the specified dimension."
+  (etest-needed-vector-dimension vector dimension))
 
 (defmethod test-dimensions ((lhs matrix) (rhs vector) &key)
   (etest-dimensions (matrix-cols lhs) (length rhs)))

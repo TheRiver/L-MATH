@@ -191,6 +191,10 @@ and END. Example:
 (lm:linear-interpolation (lm:vector 0 0 0) (lm:vector 10 10 10) 2)
 => #<L-MATH:VECTOR 20.000 20.000 20.000 >
 
+This method also accepts arbitrary numbers, and will interpolate
+between them:
+
+(lm:linear-interpolation 0 100 0.5) => 50.0
 
 (lm:between START END)
 Returns the vector exactly between the VECTORs START and END.

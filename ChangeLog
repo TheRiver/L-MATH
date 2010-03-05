@@ -1,3 +1,25 @@
+2010-02-27  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* random.lisp (noise3): Updated to test the given argument to
+	ensure that it is a 3-vector.
+
+	* tests.lisp (etest-needed-vector-dimension): A helper macro for
+	testing required dimension sizes.
+	(test-dimensions): Added two methods that will test a lm:vector
+	and list to ensure that they have the required dimension.
+
+	* random.lisp (noise3): A 3D perlin noise implementation.
+	(initialize-noise3): Added a method to initialise the data used by
+	NOISE3.
+	(*perlin-gradients*, *perlin-permutations*): These store the data
+	needed for the perlin noise generator.
+	(draw-noise3-output): A functio that allows the user to output an
+	image of the perlin noise function.
+
+	* conditions.lisp (required-dimension-error): Added a new subclass
+	of dimension-error. Allows operations requiring specific
+	dimensions to report errors.
+
 2010-02-23  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* interpolate.lisp (between): Modifed to take numbers as
@@ -15,6 +37,9 @@
 	with random data.
 
 2010-02-19  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* README (If): Updated the README file to discuss the changes to
+	LINEAR-INTERPOLATION
 
 	* interpolate.lisp (linear-interpolation): Added a method so that
 	this function can operate on numbers.
