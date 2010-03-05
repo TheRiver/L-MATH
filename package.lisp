@@ -54,6 +54,7 @@
 	   #:dot-product
 	   #:angle-between
 	   #:euclidean-distance
+	   #:centre-of-mass
 	   #:cross-product
 	   #:elt
 	   #:x

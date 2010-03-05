@@ -110,6 +110,13 @@ as lists."
      for r in rhs
      sum (expt (- l r) 2)))
 
+(defgeneric centre-of-mass (vector &rest vectors)
+  (:documentation "Calculates the centre point of a series of
+  objects.")
+  (:method ((vector vector) &rest vectors)
+    (/ (reduce #'+ vectors :initial-value vector)
+       (1+ (length vectors)))))
+
 ;;;-------------------------------------------------------------------
 ;;; Operations on numbers
 ;;;-------------------------------------------------------------------
