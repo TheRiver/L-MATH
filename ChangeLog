@@ -1,3 +1,9 @@
+2010-03-06  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* random.lisp (noise3): Fixed a bug: added absolute values to the
+	interpolation sub-function. Also, changed the use of TRUNCATE to
+	FLOOR to properly allow for negative values.
+
 2010-03-05  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* vector-operations.lisp (centre-of-mass): Added a generic

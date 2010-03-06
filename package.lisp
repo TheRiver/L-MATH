@@ -96,6 +96,7 @@
 	   #:between
 	   #:normal
 	   #:noise3
+	   #:draw-noise3-output
 	   #:initialize-noise3
 	   #:noise3
 	   #:make-random-vector)

@@ -1,4 +1,3 @@
-(declaim (optimize (debug 3) (safety 3) (speed 0)))
 (in-package #:l-math)
 
 ;;; L-MATH: a library for simple linear algebra.
@@ -138,25 +137,26 @@ no smaller than min and no larger than max."
   (test-dimensions point 3)
   (unless *perlin-gradients*
     (initialize-noise3))
-  (multiple-value-bind (i u) (truncate (x point))
-    (multiple-value-bind (j v) (truncate (y point))
-      (multiple-value-bind (k w) (truncate (z point))
+  (multiple-value-bind (i u) (floor (x point))
+    (multiple-value-bind (j v) (floor (y point))
+      (multiple-value-bind (k w) (floor (z point))
 	(labels ((interpolation (val)
 		   ;; A polynomial used to smooth between values.
 		   (declare (type real val))
-		   (+ (- (* 6d0 (expt val 5))
-			 (* 15d0 (expt val 4)))
-		      (* 10d0 (expt val 3))))
+		   (let ((val (abs val)))
+		     (+ (- (* 6d0 (expt val 5))
+			   (* 15d0 (expt val 4)))
+			(* 10d0 (expt val 3)))))
 		 (fold (point)
 		   (declare (type list point))
 		   (let ((divisor (cl:length *perlin-permutations*)))
 		     (cl:elt *perlin-permutations*
-			  (mod (+ (cl:elt *perlin-permutations*
-				       (mod (+ (cl:elt *perlin-permutations* (mod (first point) divisor))
-					       (second point))
-					    divisor))
-				  (third point))
-			       divisor))))
+			     (mod (+ (cl:elt *perlin-permutations*
+					     (mod (+ (cl:elt *perlin-permutations* (mod (first point) divisor))
+						     (second point))
+						  divisor))
+				     (third point))
+				  divisor))))
 		 (wavelet-coefficient (point)
 		   ;; Return the wavelet coefficents, which are merely
 		   ;; random choices from the points we selected on
@@ -209,10 +209,10 @@ resolution of the image. FILE-PATH defines where the image should be
 saved, and PLANE-WIDTH defines the width of the plane on which the
 noise is added. The wider this width, the smaller the noise detail."
   (declare (type (integer 1) height plane-width))
-  (let ((top-left (vector 0 0 0))
-	(top-right (vector plane-width 0 0))
-	(bottom-left (vector 0 plane-width 0))
-	(bottom-right (vector plane-width plane-width 0)))
+  (let ((top-left (vector (- plane-width) plane-width 0))
+	(top-right (vector plane-width plane-width 0))
+	(bottom-left (vector (- plane-width) (- plane-width) 0))
+	(bottom-right (vector plane-width (- plane-width) 0)))
     (with-open-file (stream file-path :direction :output :if-exists :supersede)
       (format stream "P3~%~A ~A~%255~%"
 	      width height)
