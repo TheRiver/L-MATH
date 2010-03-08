@@ -54,6 +54,7 @@
 	   #:dot-product
 	   #:angle-between
 	   #:euclidean-distance
+	   #:centre-of-mass
 	   #:cross-product
 	   #:elt
 	   #:x
@@ -95,6 +96,7 @@
 	   #:between
 	   #:normal
 	   #:noise3
+	   #:draw-noise3-output
 	   #:initialize-noise3
 	   #:noise3
 	   #:make-random-vector)
