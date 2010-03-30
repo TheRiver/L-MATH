@@ -54,6 +54,7 @@
 	   #:dot-product
 	   #:angle-between
 	   #:euclidean-distance
+	   #:centre-of-mass
 	   #:cross-product
 	   #:elt
 	   #:x
@@ -92,7 +93,13 @@
 	   #:dimension-error
 	   #:zero-length-error
 	   #:linear-interpolation
-	   #:between)
+	   #:between
+	   #:normal
+	   #:noise3
+	   #:draw-noise3-output
+	   #:initialize-noise3
+	   #:noise3
+	   #:make-random-vector)
   (:shadow #:vector
 	   #:make-vector
 	   #:length

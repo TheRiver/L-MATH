@@ -1,3 +1,60 @@
+2010-03-06  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* random.lisp (noise3): Fixed a bug: added absolute values to the
+	interpolation sub-function. Also, changed the use of TRUNCATE to
+	FLOOR to properly allow for negative values.
+
+2010-03-05  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector-operations.lisp (centre-of-mass): Added a generic
+	function to calculate the average of a group of points.
+
+2010-02-27  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* random.lisp (noise3): Updated to test the given argument to
+	ensure that it is a 3-vector.
+
+	* tests.lisp (etest-needed-vector-dimension): A helper macro for
+	testing required dimension sizes.
+	(test-dimensions): Added two methods that will test a lm:vector
+	and list to ensure that they have the required dimension.
+
+	* random.lisp (noise3): A 3D perlin noise implementation.
+	(initialize-noise3): Added a method to initialise the data used by
+	NOISE3.
+	(*perlin-gradients*, *perlin-permutations*): These store the data
+	needed for the perlin noise generator.
+	(draw-noise3-output): A functio that allows the user to output an
+	image of the perlin noise function.
+
+	* conditions.lisp (required-dimension-error): Added a new subclass
+	of dimension-error. Allows operations requiring specific
+	dimensions to report errors.
+
+2010-02-23  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* interpolate.lisp (between): Modifed to take numbers as
+	arguments.
+	(linear-interpolation): Fixed a bug in the method accepting
+	numbers as arguments.
+
+2010-02-22  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* random.lisp (normal): Added a function to create normally
+	distributed values.
+	(make-random-vector): Added a function to create a vector filled
+	with random values.
+	(make-random-matrix): Added a function to create a matrix filled
+	with random data.
+
+2010-02-19  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* README (If): Updated the README file to discuss the changes to
+	LINEAR-INTERPOLATION
+
+	* interpolate.lisp (linear-interpolation): Added a method so that
+	this function can operate on numbers.
+
 2010-01-30  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* LICENSE: Updated to ensure that the license is "GPL, version 3,

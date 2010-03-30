@@ -62,6 +62,20 @@
 		     (dimension-error-dim1 condition)
 		     (dimension-error-dim2 condition))))))
 
+(define-condition required-dimension-error (dimension-error)
+  ((dim1 :initarg :dim1
+	 :initform nil
+	 :reader dimension-error-dim1)
+   (dim2 :initarg :dim2
+	 :initform nil
+	 :reader dimension-error-dim2))
+  (:report (lambda (condition stream)
+	     (apply #'format stream
+		    "The mathematical object has dimension ~a; an object with dimension ~a is required."
+		    (list
+		     (dimension-error-dim1 condition)
+		     (dimension-error-dim2 condition))))))
+
 (define-condition zero-norm-error (l-math-error)
   ((format-control :initform "The given vector is of zero length.")))
 

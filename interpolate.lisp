@@ -46,12 +46,14 @@
   (:method (start end (t-val real))
     (declare (type (or vector list) start end))
     (let ((direction (- end start)))
-      (+ start (* direction t-val)))))
+      (+ start (* direction t-val))))
+  (:method ((start number) (end number) (t-val real))
+    (+ start (* (- end start) t-val))))
 
 (defgeneric between (start end)
   (:documentation "Calculates the vector half way between two other
   vectors. This is equivalent to (LINEAR-INTERPOLATION START END
   0.5).")
   (:method (start end)
-    (declare (type (or vector list) start end))
+    (declare (type (or vector list number) start end))
     (lm:/ (lm:+ start end) 2)))

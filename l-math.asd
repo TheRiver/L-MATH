@@ -54,5 +54,6 @@
 		 (:file "vector-operations")
 		 (:file "operations")
 		 (:file "rotations")
-		 (:file "interpolate"))
+		 (:file "interpolate")
+		 (:file "random"))
     :serial t)
