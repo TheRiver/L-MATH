@@ -1,3 +1,8 @@
+2010-04-06  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* random.lisp (uniform): Added a method to create uniformly
+	distributed values.
+
 2010-03-06  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* random.lisp (noise3): Fixed a bug: added absolute values to the
