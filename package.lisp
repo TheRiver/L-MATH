@@ -95,6 +95,7 @@
 	   #:linear-interpolation
 	   #:between
 	   #:normal
+	   #:uniform
 	   #:noise3
 	   #:draw-noise3-output
 	   #:initialize-noise3

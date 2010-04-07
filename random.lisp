@@ -56,6 +56,15 @@ no smaller than min and no larger than max."
 			    (sqrt (* -2 (log (random 1.0 state))))
 			    (cos (* 2 pi (random 1.0 state)))))))))
 
+(defun uniform (&key (min 0.0) (max 1.0) (state *random-state*))
+  "Returns a random number uniformly distributed between
+minimum (inclusive) and maximum (exclusive). Like CL:RANDOM, the type
+of the returned value depends on the type of min and max."
+  (when (<= max min)
+    (error 'l-math-error :format-control "The maximum value (~A) is less than or equal to the minimum value (~A)."
+	   :format-arguments (list max min)))
+  (+ (random (- max min) state) min))
+
 (defun make-random-vector (dimension &key (noise #'normal))
   "Creates a VECTOR of the given dimension filled with random values
   obtained by calling NOISE once for each element in the VECTOR. By
