@@ -83,3 +83,7 @@ numbers. This is just a shortcut for using the cl:- function."
     "Two real values are compared for equivalence to a pre-defined
 tolerance."
     (< (abs (- lhs rhs)) *equivalence-tolerance*)))
+
+(defgeneric zerop (item)
+  (:documentation "Returns T iff the given item is zero, to the
+  tolerance used by EQUIVALENT"))
