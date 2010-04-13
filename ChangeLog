@@ -1,3 +1,8 @@
+2010-04-13  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* operations.lisp (create-vector-operation-method): Updated so
+	that vector operations are performed using loops. 
+
 2010-04-12  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* matrix.lisp (zerop): Returns T iff all members of the matrix are
