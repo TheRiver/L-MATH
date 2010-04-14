@@ -1,7 +1,17 @@
+2010-04-13  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* operations.lisp (create-vector-operation-method): Updated so
+	that vector operations are performed using loops. 
+
 2010-04-12  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* matrix.lisp (zerop): Returns T iff all members of the matrix are
+	EQUIVALENT to zero.
 
 	* vector.lisp (vector=): Performed some optimisations to make
 	vector comparision quicker.
+	(zerop): Added a method to test VECTORs and LISTs to see if all
+	their components are zero.
 
 2010-04-06  Rudy Neeser  <rudy.neeser@gmail.com>
 

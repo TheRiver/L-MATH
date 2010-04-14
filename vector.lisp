@@ -264,6 +264,19 @@ elements."
 (defmethod equivalent ((lhs vector) (rhs list))
   (equivalent rhs lhs))
 
+(defmethod zerop ((vector vector))
+  "Returns T if all components of the vector are zero."
+  (with-slots (data) vector
+    (loop
+       for component across data
+       always (equivalent component 0.0d0))))
+
+(defmethod zerop ((vector list))
+  "Returns T if all components of the vector are zero."
+  (loop
+     for component in vector
+     always (equivalent component 0.0d0)))
+
 ;;;---------------------------------------------------------------------
 
 (defgeneric to-vector (item &key dimension)

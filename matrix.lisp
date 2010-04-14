@@ -99,6 +99,7 @@
     `(with-slots ((,data-sym data)) ,matrix
        (setf (aref ,data-sym ,row ,col) ,new-value))))
 
+
 (defmacro do-each-matrix-element ((symbol matrix
 					  &optional row-index-symbol
 					  col-index-symbol)
@@ -188,6 +189,13 @@
 (defmethod equivalent ((lhs matrix) (rhs matrix))
   "Synonym for MATRIX="
   (matrix= lhs rhs))
+
+(defmethod zerop ((matrix matrix))
+  "Returns T iff all components in the matrix is EQUIVALENT to zero."
+  (do-each-matrix-element (i matrix)
+    (unless (equivalent i 0.0d0)
+      (return-from zerop nil)))
+  t)
   
 (defun make-matrix (rows cols &key initial-elements)
   "Creates a matrix of the given dimensions."

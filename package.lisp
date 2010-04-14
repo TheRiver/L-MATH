@@ -39,6 +39,7 @@
   (:export #:*equivalence-tolerance*
 	   #:copy
 	   #:equivalent
+	   #:zerop
 	   #:vector
 	   #:make-vector
 	   #:to-vector
@@ -102,6 +103,7 @@
 	   #:noise3
 	   #:make-random-vector)
   (:shadow #:vector
+	   #:zerop
 	   #:make-vector
 	   #:length
 	   #:elt
