@@ -39,6 +39,7 @@
   (:export #:*equivalence-tolerance*
 	   #:copy
 	   #:equivalent
+	   #:zerop
 	   #:vector
 	   #:make-vector
 	   #:to-vector
@@ -95,12 +96,14 @@
 	   #:linear-interpolation
 	   #:between
 	   #:normal
+	   #:uniform
 	   #:noise3
 	   #:draw-noise3-output
 	   #:initialize-noise3
 	   #:noise3
 	   #:make-random-vector)
   (:shadow #:vector
+	   #:zerop
 	   #:make-vector
 	   #:length
 	   #:elt

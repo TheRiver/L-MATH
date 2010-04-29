@@ -44,7 +44,11 @@ of the generic methods defined below, such as c+"
        (with-slots ((rhs-data data)) rhs
 	 (let ((result (make-vector (length lhs))))
 	   (with-slots (data) result
-	     (map-into data #',function lhs-data rhs-data))
+	     (loop
+		for x across lhs-data
+		for y across rhs-data
+		for i from 0 below (cl:length data)
+		do (setf (aref data i) (,function x y))))
 	   result)))))
 
 (defmacro create-list-operation-method (name function)

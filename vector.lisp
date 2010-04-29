@@ -210,23 +210,40 @@
 (defgeneric vector= (lhs rhs)
   (:documentation "Returns t iff the two vectors are equal. Effected
   by *equivalence-tolerance*.")
-  (:method (lhs rhs)
-    (declare (type (or vector list) lhs rhs))
-    (symbol-macrolet ((lhs-data (if (listp lhs)
-				    lhs
-				    (slot-value lhs 'data)))
-		      (rhs-data (if (listp rhs)
-				    rhs
-				    (slot-value rhs 'data))))
-      (cond
-	((/= (cl:length lhs-data) (cl:length rhs-data))
-	 nil)
-	(t
-	 (if (/= *equivalence-tolerance* 0)
-	     (every #'(lambda (x y)
-			(<= (abs (- x y)) *equivalence-tolerance*))
-		    lhs-data rhs-data)
-	     (every #'= lhs-data rhs-data)))))))
+  (:method ((lhs vector) (rhs vector))
+    (with-slots ((lhs-data data)) lhs
+      (with-slots ((rhs-data data)) rhs
+	(cond
+	  ((/= (cl:length lhs-data) (cl:length rhs-data))
+	   nil)
+	  (t
+	   (if (/= *equivalence-tolerance* 0)
+	       (loop
+		  for x across lhs-data
+		  for y across rhs-data
+		  always
+		    (<= (abs (- x y)) *equivalence-tolerance*))
+	       (loop
+		  for x across lhs-data
+		  for y across rhs-data
+		  always (= x y)))))))))
+
+(defmethod vector= ((lhs list) (rhs list))
+  (cond
+    ((/= (cl:length lhs) (cl:length rhs))
+     nil)
+    (t
+     (if (/= *equivalence-tolerance* 0)
+	 (loop
+	    for x in lhs
+	    for y in rhs
+	    always (<= (abs (- x y)) *equivalence-tolerance*))
+	 (loop
+	    for x in lhs
+	    for y in rhs
+	    always (= x y))))))
+     
+     
 
 (defmethod equivalent ((lhs vector) (rhs vector))
   "Synonym for VECTOR=."
@@ -235,9 +252,7 @@
 (defmethod equivalent ((lhs list) (rhs list))
   "Returns t iff the two lists are of the same length with equivalent
 elements."
-  (and (= (length lhs)
-	  (length rhs))
-       (every #'equivalent lhs rhs)))
+  (vector= lhs rhs))
 
 (defmethod equivalent ((lhs list) (rhs vector))
   "Compares a list and a vector for equivalence."
@@ -248,6 +263,19 @@ elements."
 
 (defmethod equivalent ((lhs vector) (rhs list))
   (equivalent rhs lhs))
+
+(defmethod zerop ((vector vector))
+  "Returns T if all components of the vector are zero."
+  (with-slots (data) vector
+    (loop
+       for component across data
+       always (equivalent component 0.0d0))))
+
+(defmethod zerop ((vector list))
+  "Returns T if all components of the vector are zero."
+  (loop
+     for component in vector
+     always (equivalent component 0.0d0)))
 
 ;;;---------------------------------------------------------------------
 
