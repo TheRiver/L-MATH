@@ -40,6 +40,7 @@
 	   #:copy
 	   #:equivalent
 	   #:zerop
+	   #:to-list
 	   #:vector
 	   #:make-vector
 	   #:to-vector
@@ -91,6 +92,7 @@
 	   #:create-rotation-from-view-to-view
 	   #:create-uniform-scale-matrix
 	   #:create-scale-matrix
+	   #:create-translation-matrix
 	   #:to-degrees
 	   #:to-radians
 	   #:l-math-error

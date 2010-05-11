@@ -35,32 +35,16 @@
 ;;; do so. If you do not wish to do so, delete this exception statement
 ;;; from your version.
 
-(defun create-uniform-scale-matrix (dimension scale &key homogenous)
-  "Creates a matrix that will scale all elements uniformly. Post
-multiply this matrix by the vectors."
-  (declare (type fixnum dimension)
-	   (real scale))
-  (cond
-    (homogenous
-     (let ((matrix (make-identity dimension)))
-       (loop
-	  for i from 0 below (1- dimension)
-	  do (setf (matrix-elt matrix i i) scale))
-       matrix))
-    (t
-     (make-diagonal (loop for i from 0 below dimension collect scale)))))
-
-(defun create-scale-matrix (scale-list &key homogenous)
-  "Given a list of scales, one for each dimension, this returns a
-  matrix that will scale any post multiplied vectors by the
-  appropriate amount in each dimension."
-  (cond
-    (homogenous
-     (let ((matrix (make-identity (1+ (length scale-list)))))
-       (loop
-	  for item in scale-list
-	  for i = 0 then (1+ i)
-	  do (setf (matrix-elt matrix i i) item))
-       matrix))
-     (t
-      (make-diagonal scale-list))))
+(defun create-translation-matrix (translations)
+  "Given a list of translation, this returns a (1+ (length
+translations)) × (1+ (length translations)) matrix that will translate
+any post multiplied vector by the given amount in each dimension. This
+is a matrix that operates in homogenous coordinates."
+  (let* ((length (length translations))
+	 (matrix (make-identity (1+ length))))
+    (loop
+       for item in translations
+       for i = 0 then (1+ i)
+       do (setf (matrix-elt matrix i length) item))
+    matrix))
+	

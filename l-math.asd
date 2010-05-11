@@ -55,6 +55,7 @@
 		 (:file "operations")
 		 (:file "rotations")
 		 (:file "scale")
+		 (:file "translation")
 		 (:file "interpolate")
 		 (:file "random"))
     :serial t)
