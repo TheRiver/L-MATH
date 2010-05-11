@@ -311,8 +311,15 @@ elements."
 	      "NIL, or a positive integer")
   (make-vector dimension :initial-elements item))
 
-;;;---------------------------------------------------------------------    
+;;;---------------------------------------------------------------------
 
+(defmethod to-list ((vector vector))
+  "Transforms a vector object into a list."
+  (loop
+     for i from 0 below (length vector)
+     collect (elt vector i)))
+
+;;;---------------------------------------------------------------------    
 
 (defgeneric normalise! (vector)
   (:documentation "Destructively normalises the vector.")

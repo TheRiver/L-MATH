@@ -1,3 +1,24 @@
+2010-05-11  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (to-list): Added an implementation that will
+	transform vectors into lists.
+
+	* generics.lisp: Created a generic method that will transform
+	objects into lists.
+
+	* translation.lisp: Added a file for managing translation
+	matrices.
+
+	* scale.lisp (create-scale-matrix): Created a method to create
+	non-uniform scales.
+	(create-uniform-scale-matrix): Returns a matrix that performs
+	uniform scaling.
+
+	* matrix.lisp (make-diagonal): A function that returns diagonal
+	matrices.
+
+	* scale.lisp: Added a new file to manage scale matrices.
+
 2010-04-13  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* operations.lisp (create-vector-operation-method): Updated so
