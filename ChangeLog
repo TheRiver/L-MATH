@@ -1,3 +1,15 @@
+2010-05-11  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* scale.lisp (create-scale-matrix): Created a method to create
+	non-uniform scales.
+	(create-uniform-scale-matrix): Returns a matrix that performs
+	uniform scaling.
+
+	* matrix.lisp (make-diagonal): A function that returns diagonal
+	matrices.
+
+	* scale.lisp: Added a new file to manage scale matrices.
+
 2010-04-13  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* operations.lisp (create-vector-operation-method): Updated so

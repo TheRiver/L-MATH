@@ -196,7 +196,7 @@
     (unless (equivalent i 0.0d0)
       (return-from zerop nil)))
   t)
-  
+
 (defun make-matrix (rows cols &key initial-elements)
   "Creates a matrix of the given dimensions."
   (let ((matrix (make-instance 'matrix :size (list rows cols))))
@@ -223,6 +223,16 @@
   (let ((matrix (make-matrix size size)))
     (dotimes (i size matrix)
       (setf (matrix-elt matrix i i) 1))))
+
+(defun make-diagonal (diagonal)
+  "Creates a (length diagonal) × (length diagonal) matrix zero
+  everywhere except along the diagonal."
+  (let ((matrix (make-identity (length diagonal))))
+    (loop
+       for item in diagonal
+       for i = 0 then (1+ i)
+       do (setf (matrix-elt matrix i i) item))
+    matrix))
 
 (defmethod copy ((matrix matrix))
   (let ((new-matrix (make-matrix (matrix-rows matrix)

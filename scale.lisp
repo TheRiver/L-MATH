@@ -1,4 +1,4 @@
-;;; -*- Mode: Lisp; -*-
+(in-package #:l-math)
 
 ;;; L-MATH: a library for simple linear algebra.
 ;;; Copyright (C) 2009-2010 Rudolph Neeser
@@ -35,26 +35,15 @@
 ;;; do so. If you do not wish to do so, delete this exception statement
 ;;; from your version.
 
-(defpackage #:l-math-asdf
-  (:use :common-lisp :asdf))
+(defun create-uniform-scale-matrix (dimension scale)
+  "Creates a matrix that will scale all elements uniformly. Post
+multiply this matrix by the vectors."
+  (declare (type fixnum dimension)
+	   (real scale))
+  (make-diagonal (loop for i from 0 below dimension collect scale)))
 
-(in-package #:l-math-asdf)
-
-(defsystem :l-math
-    :description "A simple math library focused on linear algebra."
-    :version "0.3"
-    :author "Rudolph Neeser <rudy.neeser@gmail.com>"
-    :license "GPLv3 with Classpath Exception" 
-    :components ((:file "package")
-		 (:file "conditions")
-		 (:file "generics")
-		 (:file "vector")
-		 (:file "matrix")
-		 (:file "tests")
-		 (:file "vector-operations")
-		 (:file "operations")
-		 (:file "rotations")
-		 (:file "scale")
-		 (:file "interpolate")
-		 (:file "random"))
-    :serial t)
+(defun create-scale-matrix (scale-list)
+  "Given a list of scales, one for each dimension, this returns a
+  matrix that will scale any post multiplied vectors by the
+  appropriate amount in each dimension."
+  (make-diagonal scale-list))
