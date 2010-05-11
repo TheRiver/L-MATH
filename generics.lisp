@@ -87,3 +87,9 @@ tolerance."
 (defgeneric zerop (item)
   (:documentation "Returns T iff the given item is zero, to the
   tolerance used by EQUIVALENT"))
+
+(defgeneric to-list (item)
+  (:documentation "Returns a representation of the given object as a list.")
+  (:method ((item list))
+    "The list representation of a list is just the list itself."
+    item))

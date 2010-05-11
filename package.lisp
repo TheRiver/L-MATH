@@ -40,6 +40,7 @@
 	   #:copy
 	   #:equivalent
 	   #:zerop
+	   #:to-list
 	   #:vector
 	   #:make-vector
 	   #:to-vector
@@ -68,6 +69,7 @@
 	   #:make-matrix
 	   #:matrix-elt
 	   #:make-identity
+	   #:make-diagonal
 	   #:do-each-matrix-element
 	   #:do-each-matrix-element-2
 	   #:test-dimensions
@@ -88,6 +90,9 @@
 	   #:create-rotation-matrix
 	   #:create-rotation-from-view
 	   #:create-rotation-from-view-to-view
+	   #:create-uniform-scale-matrix
+	   #:create-scale-matrix
+	   #:create-translation-matrix
 	   #:to-degrees
 	   #:to-radians
 	   #:l-math-error

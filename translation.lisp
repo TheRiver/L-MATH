@@ -1,4 +1,4 @@
-;;; -*- Mode: Lisp; -*-
+(in-package #:l-math)
 
 ;;; L-MATH: a library for simple linear algebra.
 ;;; Copyright (C) 2009-2010 Rudolph Neeser
@@ -35,27 +35,16 @@
 ;;; do so. If you do not wish to do so, delete this exception statement
 ;;; from your version.
 
-(defpackage #:l-math-asdf
-  (:use :common-lisp :asdf))
-
-(in-package #:l-math-asdf)
-
-(defsystem :l-math
-    :description "A simple math library focused on linear algebra."
-    :version "0.3"
-    :author "Rudolph Neeser <rudy.neeser@gmail.com>"
-    :license "GPLv3 with Classpath Exception" 
-    :components ((:file "package")
-		 (:file "conditions")
-		 (:file "generics")
-		 (:file "vector")
-		 (:file "matrix")
-		 (:file "tests")
-		 (:file "vector-operations")
-		 (:file "operations")
-		 (:file "rotations")
-		 (:file "scale")
-		 (:file "translation")
-		 (:file "interpolate")
-		 (:file "random"))
-    :serial t)
+(defun create-translation-matrix (translations)
+  "Given a list of translation, this returns a (1+ (length
+translations)) × (1+ (length translations)) matrix that will translate
+any post multiplied vector by the given amount in each dimension. This
+is a matrix that operates in homogenous coordinates."
+  (let* ((length (length translations))
+	 (matrix (make-identity (1+ length))))
+    (loop
+       for item in translations
+       for i = 0 then (1+ i)
+       do (setf (matrix-elt matrix i length) item))
+    matrix))
+	
