@@ -311,6 +311,16 @@ elements."
 	      "NIL, or a positive integer")
   (make-vector dimension :initial-elements item))
 
+(defmethod to-homogenous ((item list))
+  "Adds the element 1 to the end of the list."
+  (append item (list 1)))
+
+(defmethod to-homogenous ((item vector))
+  "Adds the element 1 to the end of the list."
+  (let ((vector (to-vector item :dimension (1+ (length item)))))
+    (setf (elt vector (length item)) 1)
+    vector))
+
 ;;;---------------------------------------------------------------------
 
 (defmethod to-list ((vector vector))

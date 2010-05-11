@@ -1,5 +1,13 @@
 2010-05-11  Rudy Neeser  <rudy.neeser@gmail.com>
 
+	* vector.lisp (to-homogenous): Added an implementation to
+	transform vectors represented as lists into homogenous
+	coordinates.
+	(to-homogenous): ditto for VECTOR objects
+
+	* generics.lisp (to-homogenous): Added a method for lifting
+	something into homogenous space.
+
 	* vector.lisp (to-list): Added an implementation that will
 	transform vectors into lists.
 
