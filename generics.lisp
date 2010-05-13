@@ -93,3 +93,7 @@ tolerance."
   (:method ((item list))
     "The list representation of a list is just the list itself."
     item))
+
+(defgeneric to-homogenous (item)
+  (:documentation "Takes an item and lifts it into homogenous space by
+  adding one dimension on to it."))

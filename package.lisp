@@ -44,6 +44,7 @@
 	   #:vector
 	   #:make-vector
 	   #:to-vector
+	   #:to-homogenous
 	   #:copy-vector
 	   #:vector=
 	   #:matrix=
