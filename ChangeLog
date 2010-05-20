@@ -1,5 +1,8 @@
 2010-05-20  Rudy Neeser  <rudy.neeser@gmail.com>
 
+	* matrix.lisp (matrix-elt): Ensured that new elements are coerced
+	to double in the setf-expander.
+
 	* vector.lisp (elt): Coerces the new value to a double in the
 	setf-expander.
 	(initialise-data): Ensure that the vector's elements are

@@ -99,7 +99,8 @@
 (defsetf matrix-elt (matrix row col) (new-value)
   (let ((data-sym (gensym)))
     `(with-slots ((,data-sym data)) ,matrix
-       (setf (aref ,data-sym ,row ,col) ,new-value))))
+       (setf (aref ,data-sym ,row ,col)
+	     (coerce ,new-value 'double-float)))))
 
 (defmacro do-each-matrix-element ((symbol matrix
 					  &optional row-index-symbol
