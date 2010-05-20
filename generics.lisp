@@ -75,6 +75,7 @@ numbers. This is just a shortcut for using the cl:- function."
   (:method (lhs rhs)
     "A default implementation that ensures that unrelated objects are
     not considered equivalent."
+    (declare (ignore lhs rhs))
     nil)
   (:method ((lhs number) (rhs number))
     "Returns t iff two numbers are equivalent (using =)."

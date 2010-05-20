@@ -70,7 +70,9 @@
 
 (defmethod initialise-data ((matrix matrix) (size-list list))
   (with-slots (data) matrix
-    (setf data (make-array size-list))))
+    (setf data (make-array size-list
+			   :initial-element 0.0d0
+			   :element-type 'double-float))))
 
 (defmethod initialize-instance :after ((matrix matrix) &key (size (list 3 3)))
   (initialise-data matrix size))
