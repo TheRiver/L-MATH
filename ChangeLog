@@ -1,5 +1,10 @@
 2010-05-20  Rudy Neeser  <rudy.neeser@gmail.com>
 
+	* l-math.asd (:l-math): Version bump.
+
+	* vector.lisp (x,y,z,w): Ensure that the setf-expanders for these
+	forms coerce the new value to a double.
+
 	* matrix.lisp (matrix-elt): Ensured that new elements are coerced
 	to double in the setf-expander.
 
