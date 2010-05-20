@@ -1,3 +1,18 @@
+2010-05-20  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (elt): Coerces the new value to a double in the
+	setf-expander.
+	(initialise-data): Ensure that the vector's elements are
+	initialised and set to double.
+	(make-vector): Ensure the the initial-elements are coerced to a
+	double.
+
+	* matrix.lisp (initialise-data): Ensure that the matrix elements
+	are initialised, and that the matrix is an appropriate type.
+
+	* generics.lisp (equivalent): Added an IGNORE statement to fix a
+	warning in CLISP
+
 2010-05-11  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* vector.lisp (to-homogenous): Added an implementation to

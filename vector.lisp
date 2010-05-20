@@ -86,7 +86,8 @@
     (cl:elt vector index)))
 
 (defsetf elt (vector index) (new-value)
-  `(setf (cl:elt (slot-value ,vector 'data) ,index) ,new-value))
+  `(setf (cl:elt (slot-value ,vector 'data) ,index)
+	 (coerce ,new-value 'double-float)))
 
 (declaim (inline x))
 (defgeneric x (vector)
@@ -149,7 +150,9 @@
 
 (defmethod initialise-data ((vector vector) (size integer))
   (with-slots (data) vector
-    (setf data (make-array size)))
+    (setf data (make-array size
+			   :element-type 'double-float
+			   :initial-element 0.0d0)))
   vector)
 
 (defmethod initialize-instance :after ((vector vector) &key size)
@@ -187,7 +190,7 @@
 	   for el in initial-elements
 	   for i from 0 below dim
 	   do
-	     (setf (aref data i) el))))
+	     (setf (aref data i) (coerce el 'double-float)))))
     vec))
 
 (defun vector (&rest elements)
