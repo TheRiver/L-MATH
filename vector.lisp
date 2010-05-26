@@ -86,7 +86,8 @@
     (cl:elt vector index)))
 
 (defsetf elt (vector index) (new-value)
-  `(setf (cl:elt (slot-value ,vector 'data) ,index) ,new-value))
+  `(setf (cl:elt (slot-value ,vector 'data) ,index)
+	 (coerce ,new-value 'double-float)))
 
 (declaim (inline x))
 (defgeneric x (vector)
@@ -100,7 +101,8 @@
 (defgeneric (setf x) (value vector)
   (:documentation "Sets the x component from an appropriately sized vector.")
   (:method ((value number) (vector vector))
-    (setf (cl:elt (slot-value vector 'data) 0) value))
+    (setf (cl:elt (slot-value vector 'data) 0)
+	  (coerce value 'double-float)))
   (:method ((value number) (vector list))
     (setf (first vector) value)))
 
@@ -116,7 +118,7 @@
 (defgeneric (setf y) (value vector)
   (:documentation "Sets the y component from an appropriately sized vector.")
   (:method ((value number) (vector vector))
-    (setf (cl:elt (slot-value vector 'data) 1) value))
+    (setf (cl:elt (slot-value vector 'data) 1) (coerce value 'double-float)))
   (:method ((value number) (vector list))
     (setf (second vector) value)))
 
@@ -132,7 +134,7 @@
 (defgeneric (setf z) (value vector)
   (:documentation "Sets the z component from an appropriately sized vector.")
   (:method ((value number) (vector vector))
-    (setf (cl:elt (slot-value vector 'data) 2) value))
+    (setf (cl:elt (slot-value vector 'data) 2) (coerce value 'double-float)))
   (:method ((value number) (vector list))
     (setf (third vector) value)))
 
@@ -145,11 +147,13 @@
 (defgeneric (setf w) (value vector)
   (:documentation "Sets the w component from an appropriately sized vector.")
   (:method ((value number) (vector vector))
-    (setf (cl:elt (slot-value vector 'data) 3) value)))
+    (setf (cl:elt (slot-value vector 'data) 3) (coerce value 'double-float))))
 
 (defmethod initialise-data ((vector vector) (size integer))
   (with-slots (data) vector
-    (setf data (make-array size)))
+    (setf data (make-array size
+			   :element-type 'double-float
+			   :initial-element 0.0d0)))
   vector)
 
 (defmethod initialize-instance :after ((vector vector) &key size)
@@ -187,7 +191,7 @@
 	   for el in initial-elements
 	   for i from 0 below dim
 	   do
-	     (setf (aref data i) el))))
+	     (setf (aref data i) (coerce el 'double-float)))))
     vec))
 
 (defun vector (&rest elements)

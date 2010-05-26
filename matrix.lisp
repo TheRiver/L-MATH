@@ -70,7 +70,9 @@
 
 (defmethod initialise-data ((matrix matrix) (size-list list))
   (with-slots (data) matrix
-    (setf data (make-array size-list))))
+    (setf data (make-array size-list
+			   :initial-element 0.0d0
+			   :element-type 'double-float))))
 
 (defmethod initialize-instance :after ((matrix matrix) &key (size (list 3 3)))
   (initialise-data matrix size))
@@ -97,7 +99,8 @@
 (defsetf matrix-elt (matrix row col) (new-value)
   (let ((data-sym (gensym)))
     `(with-slots ((,data-sym data)) ,matrix
-       (setf (aref ,data-sym ,row ,col) ,new-value))))
+       (setf (aref ,data-sym ,row ,col)
+	     (coerce ,new-value 'double-float)))))
 
 
 (defmacro do-each-matrix-element ((symbol matrix
