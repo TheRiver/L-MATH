@@ -50,6 +50,11 @@
   (:method ((start number) (end number) (t-val real))
     (+ start (* (- end start) t-val))))
 
+(defun private-bilinear-interpolation (top-left bottom-left top-right bottom-right parameter)
+  (linear-interpolation (linear-interpolation top-left bottom-left (y parameter))
+			(linear-interpolation top-right bottom-right (y parameter))
+			(x parameter)))
+
 (defgeneric bilinear-interpolation (top-left bottom-left top-right bottom-right parameter)
   (:documentation "Performs bilinear interpolation: first this
   performs linear interpolation between the TOP-LEFT and BOTTOM-LEFT,
@@ -60,15 +65,15 @@
   same dimension. The paramater must be a 2-vector. Parameter
    (0, 0) maps to the upper left corner, and (1, 1) maps to the lower
   right corner.")
-  (:method ((top-left vector) (bottom-left vector) (top-right vector) (bottom-right vector) (parameter vector))
+  (:method ((top-left vector) (bottom-left vector) (top-right vector) (bottom-right vector) parameter)
     (test-dimensions parameter 2)
     (test-dimensions bottom-left (length top-left))
     (test-dimensions top-right (length top-left))
     (test-dimensions bottom-right (length top-left))
-
-    (linear-interpolation (linear-interpolation top-left bottom-left (y parameter))
-			  (linear-interpolation top-right bottom-right (y parameter))
-			  (x parameter))))
+    (private-bilinear-interpolation top-left bottom-left top-right bottom-right parameter))
+  (:method ((top-left number) (bottom-left number) (top-right number) (bottom-right number) parameter)
+    (test-dimensions parameter 2)
+    (private-bilinear-interpolation top-left bottom-left top-right bottom-right parameter)))
     
     
 					     
