@@ -100,6 +100,7 @@
 	   #:dimension-error
 	   #:zero-length-error
 	   #:linear-interpolation
+	   #:bilinear-interpolation
 	   #:between
 	   #:normal
 	   #:uniform

@@ -50,6 +50,29 @@
   (:method ((start number) (end number) (t-val real))
     (+ start (* (- end start) t-val))))
 
+(defgeneric bilinear-interpolation (top-left bottom-left top-right bottom-right parameter)
+  (:documentation "Performs bilinear interpolation: first this
+  performs linear interpolation between the TOP-LEFT and BOTTOM-LEFT,
+  as well as TOP-RIGHT and BOTTOM-RIGHT, using the y coordinate of the
+  parameter. It then performs linear interpolation between these
+  obtained values using the parameter's x coordinate. The four
+  position vectors can be of any dimension, but must all be of the
+  same dimension. The paramater must be a 2-vector. Parameter
+   (0, 0) maps to the upper left corner, and (1, 1) maps to the lower
+  right corner.")
+  (:method ((top-left vector) (bottom-left vector) (top-right vector) (bottom-right vector) (parameter vector))
+    (test-dimensions parameter 2)
+    (test-dimensions bottom-left (length top-left))
+    (test-dimensions top-right (length top-left))
+    (test-dimensions bottom-right (length top-left))
+
+    (linear-interpolation (linear-interpolation top-left bottom-left (y parameter))
+			  (linear-interpolation top-right bottom-right (y parameter))
+			  (x parameter))))
+    
+    
+					     
+
 (defgeneric between (start end)
   (:documentation "Calculates the vector half way between two other
   vectors. This is equivalent to (LINEAR-INTERPOLATION START END
