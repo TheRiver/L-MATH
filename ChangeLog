@@ -1,3 +1,8 @@
+2010-09-14  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* interpolate.lisp (bilinear-interpolation): Added a method to
+	perform bilinear-interpolation.
+
 2010-05-20  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* l-math.asd (:l-math): Version bump.
