@@ -1,5 +1,9 @@
 2010-09-16  Rudy Neeser  <rudy.neeser@gmail.com>
 
+	* rotations.lisp (roll-by, yaw-by, pitch-by): Added functions to
+	easily rotate vectors without explicitly creating rotation
+	matrices.
+
 	* operations.lisp (c-): Added the ability to subtract a constant
 	to a vector, or to "subtract" a vector from a constant.
 

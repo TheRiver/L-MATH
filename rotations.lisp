@@ -54,6 +54,14 @@ in radians. This is a left-handed rotation."
 	  (matrix-elt matrix 1 1) (cos angle))
     matrix))
 
+(defun roll-by (vector angle)
+  "Returns the given vector after it has undergone a roll by the given
+  angle, specified in radians. This is a left-handed rotation."
+  (check-type vector (or list vector))
+  (check-type angle real)
+  (* (roll-matrix (length vector) angle) vector))
+
+
 (defun yaw-matrix (size angle)
   "Creates a matrix that rotates around the y-axis by the given angle,
 given in radians. This is a left-handed rotation"
@@ -65,6 +73,13 @@ given in radians. This is a left-handed rotation"
 	  (matrix-elt matrix 2 2) (cos angle))
     matrix))
 
+(defun yaw-by (vector angle)
+  "Returns the given vector after it has undergone a yaw by the given
+  angle, specified in radians. This is a left-handed rotation."
+  (check-type vector (or list vector))
+  (check-type angle real)
+  (* (yaw-matrix (length vector) angle) vector))
+
 (defun pitch-matrix (size angle)
   "Creates a matrix that rotates around the x-axis by the given angle,
 given in radians. This is a left-handed rotation."
@@ -75,6 +90,13 @@ given in radians. This is a left-handed rotation."
 	  (matrix-elt matrix 2 1) (sin angle)
 	  (matrix-elt matrix 2 2) (cos angle))
     matrix))
+
+(defun pitch-by (vector angle)
+  "Returns the given vector after it has undergone a pitch by the given
+  angle, specified in radians. This is a left-handed rotation."
+  (check-type vector (or list vector))
+  (check-type angle real)
+  (* (pitch-matrix (length vector) angle) vector))
 
 
 (defmacro fill-row (matrix item-name row-num)

@@ -88,6 +88,9 @@
 	   #:yaw-matrix
 	   #:pitch-matrix
 	   #:roll-matrix
+	   #:yaw-by
+	   #:pitch-by
+	   #:roll-by
 	   #:create-rotation-matrix
 	   #:create-rotation-from-view
 	   #:create-rotation-from-view-to-view
