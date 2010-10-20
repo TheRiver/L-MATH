@@ -1,3 +1,4 @@
+(declaim (optimize (speed 0) (safety 3) (debug 3)))
 (in-package #:l-math)
 
 ;;; L-MATH: a library for simple linear algebra.
@@ -74,7 +75,7 @@ of the returned value depends on the type of min and max."
 	   (type function noise))
   (let ((result (make-vector dimension)))
     (do-each-vector-element (el result)
-      (setf el (funcall noise)))
+      (setf el (coerce (funcall noise) 'double-float)))
     result))
 
 (defun make-random-matrix (rows cols &key (noise #'normal))
