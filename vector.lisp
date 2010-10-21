@@ -161,7 +161,7 @@
     (initialise-data vector size)))
 
 (defmethod print-object ((vector vector) stream)
-  (print-unreadable-object (vector stream :type t)
+  (print-unreadable-object (vector stream :type t :identity t)
     (with-slots (data) vector
       (loop for i across data
 	 do

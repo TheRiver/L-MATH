@@ -1,3 +1,13 @@
+2010-10-20  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* random.lisp (make-random-vector): Ensure that the type placed
+	into the created vector is a double-float.
+
+2010-10-16  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (print-object): Have vectors print their identity in
+	PRINT-OBJECT.
+
 2010-09-16  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* rotations.lisp (roll-by, yaw-by, pitch-by): Added functions to
