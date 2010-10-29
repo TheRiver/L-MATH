@@ -1,3 +1,8 @@
+2010-10-29  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* matrix.lisp (make-matrix): Ensure that the initial-elements are
+	converted to double-floats as needed.
+
 2010-10-20  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* random.lisp (make-random-vector): Ensure that the type placed

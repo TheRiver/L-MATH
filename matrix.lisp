@@ -212,7 +212,10 @@
       (with-slots (data) matrix
 	(do ((i 0)
 	     (j 0)
-	     (initials initial-elements (rest initials)))
+	     (initials (mapcar #'(lambda (value)
+				   (coerce value 'double-float))
+			       initial-elements)
+		       (rest initials)))
 	    ((or (>= i rows) (>= j cols)))
 	  (setf (aref data i j) (first initials))
 	  (incf j)
