@@ -1,5 +1,15 @@
 2010-11-02  Rudy Neeser  <rudy.neeser@gmail.com>
 
+	* operations.lisp (c+): Added a method so that scalar values can
+	be added to a matrix (it is added to each element).
+	(c-): Added a method so that scalar values can be subtracted from
+	a matrix, and a method to allow a matrix to be "subtracted" from a
+	scalar value.
+	(c*): Added a method to allow a matrix to be multiplied by a
+	scalar value.
+	(c/): Added a method to allow a matrix to be divided by a scalar,
+	and vice versa.
+
 	* tests.lisp (test-dimensions): Added the missing
 	&allow-other-keys argument.
 
