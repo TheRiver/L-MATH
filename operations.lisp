@@ -216,7 +216,7 @@ lists, treating them as if they were vectors."
     result))
 
 (defmethod c* ((lhs matrix) (rhs matrix))
-  (test-dimensions lhs rhs)
+  (test-dimensions lhs rhs :transpose-rhs t)
   (let ((result (make-matrix (matrix-rows lhs) (matrix-cols rhs))))
     (do-each-matrix-element (el result row col)
       (dotimes (i (matrix-cols lhs))
