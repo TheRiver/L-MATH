@@ -53,7 +53,7 @@
        (unless (= ,vector-val-sym ,dimension-val-sym)
 	 (error 'required-dimension-error :dim1 ,vector-val-sym :dim2 ,dimension-val-sym)))))
 
-(defgeneric test-dimensions (lhs rhs &key)
+(defgeneric test-dimensions (lhs rhs &key &allow-other-keys)
   (:documentation "Throws an error if the two objects do not agree in
   dimensions. If the second object is a matrix, it is possible to
   transpose the dimensions that are tested using the :transpose-rhs
