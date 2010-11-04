@@ -1,3 +1,8 @@
+2010-11-04  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* vector.lisp (vector=): Changing the user of lm:- to cl:- speeds
+	up code.
+
 2010-11-02  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* operations.lisp (c+): Added a method so that scalar values can

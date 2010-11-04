@@ -37,7 +37,7 @@
 
 ;;;-----------------------------------------------------------------------
 
-(defvar *equivalence-tolerance* 0.0001
+(defvar *equivalence-tolerance* 0.00010d0
   "When objects are closer than this distance, they are considered equivalent.")
 
 ;;;-----------------------------------------------------------------------
