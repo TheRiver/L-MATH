@@ -221,12 +221,12 @@
 	  ((/= (cl:length lhs-data) (cl:length rhs-data))
 	   nil)
 	  (t
-	   (if (/= *equivalence-tolerance* 0)
+	   (if (/= *equivalence-tolerance* 0.0d0)
 	       (loop
 		  for x across lhs-data
 		  for y across rhs-data
 		  always
-		    (<= (abs (- x y)) *equivalence-tolerance*))
+		    (<= (abs (cl:- x y)) *equivalence-tolerance*))
 	       (loop
 		  for x across lhs-data
 		  for y across rhs-data
