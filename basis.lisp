@@ -1,4 +1,4 @@
-;;; -*- Mode: Lisp; -*-
+(in-package #:l-math)
 
 ;;; L-MATH: a library for simple linear algebra.
 ;;; Copyright (C) 2009-2011 Rudolph Neeser
@@ -35,28 +35,29 @@
 ;;; do so. If you do not wish to do so, delete this exception statement
 ;;; from your version.
 
-(defpackage #:l-math-asdf
-  (:use :common-lisp :asdf))
+;;;-----------------------------------------------------------------------
+;;; Standard basis matrices
+;;;-----------------------------------------------------------------------
 
-(in-package #:l-math-asdf)
+(defun make-hermite-basis-matrix ()
+  "Returns the 4×4 hermite basis matrix."
+  (make-matrix 4 4 :initial-elements (list  2 -2  1  1
+					   -3  3 -2 -1
+					    0  0  1  0
+					    1  0  0  0)))
 
-(defsystem :l-math
-    :description "A simple math library focused on linear algebra."
-    :version "0.3.2"
-    :author "Rudolph Neeser <rudy.neeser@gmail.com>"
-    :license "GPLv3 with Classpath Exception" 
-    :components ((:file "package")
-		 (:file "conditions")
-		 (:file "generics")
-		 (:file "vector")
-		 (:file "matrix")
-		 (:file "tests")
-		 (:file "vector-operations")
-		 (:file "operations")
-		 (:file "rotations")
-		 (:file "scale")
-		 (:file "translation")
-		 (:file "interpolate")
-		 (:file "random")
-		 (:file "basis"))
-    :serial t)
+(defun make-bezier-basis-matrix ()
+  "Returns the 4×4 Bézier basis matrix."
+  (make-matrix 4 4 :initial-elements (list -1  3 -3  1
+					    3 -6  3  0
+					   -3  3  0  0
+					    1  0  0  0)))
+
+(defun make-uniform-nonrational-bspline-basis-matrix ()
+  "Returns a 4×4 matrix for the uniform, nonrational b-splines."
+  (make-matrix 4 4 :initial-elements (list -1/6  3/6 -3/6 1/6
+					    3/6 -6/3  3/6 0
+					   -3/6  0    3/6 0
+					    1/3  4/3  1/3 0)))
+
+;;;-----------------------------------------------------------------------

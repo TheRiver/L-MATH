@@ -1,5 +1,11 @@
 2011-06-06  Rudy Neeser  <rudy.neeser@gmail.com>
 
+	* spline.lisp (spline): Added a class for managing parametric
+	curves.
+
+	* basis.lisp: Added a file and some functions for producing
+	standard basis matrices for various parametric curves and splines.
+
 	* *.lisp: Updated copyright date.
 
 2010-11-04  Rudy Neeser  <rudy.neeser@gmail.com>

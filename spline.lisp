@@ -1,4 +1,4 @@
-;;; -*- Mode: Lisp; -*-
+(in-package #:l-math)
 
 ;;; L-MATH: a library for simple linear algebra.
 ;;; Copyright (C) 2009-2011 Rudolph Neeser
@@ -35,28 +35,43 @@
 ;;; do so. If you do not wish to do so, delete this exception statement
 ;;; from your version.
 
-(defpackage #:l-math-asdf
-  (:use :common-lisp :asdf))
+;;;--------------------------------------------------------------------
+;;; A base class for all spline implementations
+;;;--------------------------------------------------------------------
 
-(in-package #:l-math-asdf)
+(defclass spline ()
+  ()
+  (:documentation "A base class for all spline and parametric curve
+  implementations."))
 
-(defsystem :l-math
-    :description "A simple math library focused on linear algebra."
-    :version "0.3.2"
-    :author "Rudolph Neeser <rudy.neeser@gmail.com>"
-    :license "GPLv3 with Classpath Exception" 
-    :components ((:file "package")
-		 (:file "conditions")
-		 (:file "generics")
-		 (:file "vector")
-		 (:file "matrix")
-		 (:file "tests")
-		 (:file "vector-operations")
-		 (:file "operations")
-		 (:file "rotations")
-		 (:file "scale")
-		 (:file "translation")
-		 (:file "interpolate")
-		 (:file "random")
-		 (:file "basis"))
-    :serial t)
+;;;--------------------------------------------------------------------
+
+(defgeneric evaluate (spline parameter)
+  (:documentation "Evaluate the given spline at the given parameter
+  value. Returns a point on that spline."))
+
+(defgeneric spline-geometry (spline)
+  (:documentation "Returns the geometry of the associated
+  spline. These are the end points, tangents, and so on, of the
+  various splines."))
+
+(defgeneric set-spline-geometry (spline geometry)
+  (:documentation "Set the control geometry (end points, tangents,
+  etc.) of the given spline."))
+
+(defsetf spline-geometry set-spline-geometry)
+
+;;;--------------------------------------------------------------------
+
+(defclass matrix-spline (spline)
+  ((basis-matrix :initform (make-hermite-basis-matrix)
+		 :initarg :basis-matrix
+		 :accessor basis-matrix
+		 :documentation "Defines the behaviour of the
+		 spline. For possible bases to use, see
+		 MAKE-HERMITE-BASIS-MATRIX, MAKE-BEZIER-BASIS-MATRIX,
+		 and MAKE-UNIFORM-NONRATIONAL-BSPLINE-BASIS-MATRIX"))
+  (:documentation "Used to represent splines that are defined by basis
+  matrices."))
+
+;;;--------------------------------------------------------------------
