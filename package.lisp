@@ -113,6 +113,7 @@
 	   #:noise3
 	   #:make-random-vector
 	   ; Splines
+	   #:spline
 	   #:evaluate
 	   #:spline-geometry
 	   #:set-spline-geometry
