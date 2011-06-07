@@ -61,6 +61,8 @@
 (declaim (inline length))
 (defgeneric length (vector)
   (:documentation "An alias for DIMENSION")
+  (:method ((array simple-array))
+    (cl:length array))
   (:method (vector)
     (dimension vector)))
 

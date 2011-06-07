@@ -58,5 +58,6 @@
 		 (:file "translation")
 		 (:file "interpolate")
 		 (:file "random")
-		 (:file "basis"))
+		 (:file "basis")
+		 (:file "spline"))
     :serial t)

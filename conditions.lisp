@@ -91,3 +91,7 @@
 		    "Attempted to perform an unsupported operation using operator ~s. ~@[~&~A~]"
 		    (list (operation-not-suported-operation-name condition)
 			  (operation-not-supported-extra-information condition))))))
+
+(define-condition spline-geometry-error (l-math-error)
+  ((format-control :initform "The geometry data for the spline is malformed.")))
+   

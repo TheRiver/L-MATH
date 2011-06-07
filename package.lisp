@@ -111,7 +111,16 @@
 	   #:draw-noise3-output
 	   #:initialize-noise3
 	   #:noise3
-	   #:make-random-vector)
+	   #:make-random-vector
+	   ; Splines
+	   #:evaluate
+	   #:spline-geometry
+	   #:set-spline-geometry
+	   #:hermite-curve
+	   #:bezier-curve
+	   #:unrbs-spline
+	   #:catmull-rom-spline
+	   )
   (:shadow #:vector
 	   #:zerop
 	   #:make-vector
