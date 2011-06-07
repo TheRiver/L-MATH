@@ -56,7 +56,7 @@
 (defun make-uniform-nonrational-bspline-basis-matrix ()
   "Returns a 4×4 matrix for the uniform, nonrational b-splines."
   (make-matrix 4 4 :initial-elements (list -1/6  3/6 -3/6 1/6
-					    3/6 -6/3  3/6 0
+					    3/6 -6/6  3/6 0
 					   -3/6  0    3/6 0
 					    1/6  4/6  1/6 0)))
 

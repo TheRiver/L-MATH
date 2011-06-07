@@ -61,6 +61,10 @@
 
 (defsetf spline-geometry set-spline-geometry)
 
+(defgeneric maximum-parameter (spline)
+  (:documentation "Returns the maximum value that the spline parameter
+  may take."))
+
 ;;;--------------------------------------------------------------------
 
 (defclass matrix-spline (spline)
@@ -98,6 +102,8 @@
       (let ((t-vec (lm:vector (expt t-val 3) (expt t-val 2) t-val 1)))
       	(lm:* t-vec (basis-matrix spline) (aref (slot-value spline 'geometry) geometry-index))))))
 
+(defmethod maximum-parameter ((spline matrix-spline))
+  (length (slot-value spline 'geometry)))
 
 ;;;--------------------------------------------------------------------
 ;;; a common geometry matrix form: sharing the last data point between

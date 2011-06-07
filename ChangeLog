@@ -15,6 +15,8 @@
 	(bezier-curve): A Bézier curve class.
 	(unrbs-spline): a uniform, non-rational b-spline class.
 	(catmull-rom-spline): A catmull-rom class.
+	(maximum-parameter): A method that will return the maximum value
+	that a parameter may take.
 
 	* vector.lisp (length): Allowed LENGTH to work on simple arrays.
 

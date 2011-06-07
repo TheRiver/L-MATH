@@ -115,6 +115,7 @@
 	   ; Splines
 	   #:spline
 	   #:evaluate
+	   #:maximum-parameter
 	   #:spline-geometry
 	   #:set-spline-geometry
 	   #:hermite-curve
