@@ -1,7 +1,7 @@
 (in-package #:l-math)
 
 ;;; L-MATH: a library for simple linear algebra.
-;;; Copyright (C) 2009-2010 Rudolph Neeser
+;;; Copyright (C) 2009-2011 Rudolph Neeser
 ;;;
 ;;; This program is free software: you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -61,6 +61,8 @@
 (declaim (inline length))
 (defgeneric length (vector)
   (:documentation "An alias for DIMENSION")
+  (:method ((array simple-array))
+    (cl:length array))
   (:method (vector)
     (dimension vector)))
 

@@ -1,7 +1,7 @@
 (in-package #:l-math)
 
 ;;; L-MATH: a library for simple linear algebra.
-;;; Copyright (C) 2009-2010 Rudolph Neeser
+;;; Copyright (C) 2009-2011 Rudolph Neeser
 ;;;
 ;;; This program is free software: you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -91,3 +91,7 @@
 		    "Attempted to perform an unsupported operation using operator ~s. ~@[~&~A~]"
 		    (list (operation-not-suported-operation-name condition)
 			  (operation-not-supported-extra-information condition))))))
+
+(define-condition spline-geometry-error (l-math-error)
+  ((format-control :initform "The geometry data for the spline is malformed.")))
+   

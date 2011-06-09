@@ -1,5 +1,5 @@
 ;;; L-MATH: a library for simple linear algebra.
-;;; Copyright (C) 2009-2010 Rudolph Neeser
+;;; Copyright (C) 2009-2011 Rudolph Neeser
 ;;;
 ;;; This program is free software: you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -111,7 +111,18 @@
 	   #:draw-noise3-output
 	   #:initialize-noise3
 	   #:noise3
-	   #:make-random-vector)
+	   #:make-random-vector
+	   ; Splines
+	   #:spline
+	   #:evaluate
+	   #:maximum-parameter
+	   #:spline-geometry
+	   #:set-spline-geometry
+	   #:hermite-curve
+	   #:bezier-curve
+	   #:unrbs-spline
+	   #:catmull-rom-spline
+	   )
   (:shadow #:vector
 	   #:zerop
 	   #:make-vector

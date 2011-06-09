@@ -35,32 +35,36 @@
 ;;; do so. If you do not wish to do so, delete this exception statement
 ;;; from your version.
 
-(defun create-uniform-scale-matrix (dimension scale &key homogenous)
-  "Creates a matrix that will scale all elements uniformly. Post
-multiply this matrix by the vectors."
-  (declare (type fixnum dimension)
-	   (real scale))
-  (cond
-    (homogenous
-     (let ((matrix (make-identity dimension)))
-       (loop
-	  for i from 0 below (1- dimension)
-	  do (setf (matrix-elt matrix i i) scale))
-       matrix))
-    (t
-     (make-diagonal (loop for i from 0 below dimension collect scale)))))
+;;;-----------------------------------------------------------------------
+;;; Standard basis matrices
+;;;-----------------------------------------------------------------------
 
-(defun create-scale-matrix (scale-list &key homogenous)
-  "Given a list of scales, one for each dimension, this returns a
-  matrix that will scale any post multiplied vectors by the
-  appropriate amount in each dimension."
-  (cond
-    (homogenous
-     (let ((matrix (make-identity (1+ (length scale-list)))))
-       (loop
-	  for item in scale-list
-	  for i = 0 then (1+ i)
-	  do (setf (matrix-elt matrix i i) item))
-       matrix))
-     (t
-      (make-diagonal scale-list))))
+(defun make-hermite-basis-matrix ()
+  "Returns the 4×4 hermite basis matrix."
+  (make-matrix 4 4 :initial-elements (list  2  1  1 -2
+					   -3 -2 -1  3
+					    0  1  0  0
+					    1  0  0  0)))
+
+(defun make-bezier-basis-matrix ()
+  "Returns the 4×4 Bézier basis matrix."
+  (make-matrix 4 4 :initial-elements (list -1  3 -3  1
+					    3 -6  3  0
+					   -3  3  0  0
+					    1  0  0  0)))
+
+(defun make-uniform-nonrational-bspline-basis-matrix ()
+  "Returns a 4×4 matrix for the uniform, nonrational b-splines."
+  (make-matrix 4 4 :initial-elements (list -1/6  3/6 -3/6 1/6
+					    3/6 -6/6  3/6 0
+					   -3/6  0    3/6 0
+					    1/6  4/6  1/6 0)))
+
+(defun make-catmull-rom-basis-matrix ()
+  "Returns the 4×4 matrix for catmull-rom interpolating splines."
+  (make-matrix 4 4 :initial-elements (list -1/2  3/2 -3/2  1/2
+					    2/2 -5/2  4/2 -1/2
+					   -1/2  0    1/2  0
+					    0    2/2  0    0)))
+
+;;;-----------------------------------------------------------------------
