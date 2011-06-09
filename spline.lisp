@@ -86,6 +86,8 @@
   (multiple-value-bind (geometry-index t-val)
       (floor parameter)
     (with-slots (geometry) spline
+      (unless geometry
+	(error 'spline-geometry-error :format-control "The curve does not have any geometry defined. There is nothing to evaluate."))
       ;; Because of the use of floor above, we will never have a t-val
       ;; of 1.0, which we do want for the very last geometry
       ;; matrix. This ensure we get it.
