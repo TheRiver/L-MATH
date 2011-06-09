@@ -114,6 +114,8 @@
 	   #:make-random-vector
 	   ; Splines
 	   #:spline
+	   #:basis-matrix
+	   #:coefficient-matrix
 	   #:evaluate
 	   #:maximum-parameter
 	   #:spline-geometry

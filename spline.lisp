@@ -107,6 +107,32 @@
 (defmethod maximum-parameter ((spline matrix-spline))
   (length (slot-value spline 'geometry)))
 
+(defgeneric coefficient-matrix (curve)
+  (:documentation "Returns a list of coefficient matrices for the
+  polynomials that control the curve along each segment.")
+  (:method ((spline matrix-spline))
+    (with-accessors ((basis basis-matrix)) spline
+      (labels ((make-coefficients (geometry)
+		 (let ((x (* basis (lm:vector (matrix-elt geometry 0 0)
+					      (matrix-elt geometry 1 0)
+					      (matrix-elt geometry 2 0)
+					      (matrix-elt geometry 3 0))))
+		       (y (* basis (lm:vector (matrix-elt geometry 0 1)
+					      (matrix-elt geometry 1 1)
+					      (matrix-elt geometry 2 1)
+					      (matrix-elt geometry 3 1))))
+		       (z (* basis (lm:vector (matrix-elt geometry 0 2)
+					      (matrix-elt geometry 1 2)
+					      (matrix-elt geometry 2 2)
+					      (matrix-elt geometry 3 2)))))
+		   (make-matrix 4 3 :initial-elements (list (elt x 0) (elt y 0) (elt z 0)
+							    (elt x 1) (elt y 1) (elt z 1)
+							    (elt x 2) (elt y 2) (elt z 2)
+							    (elt x 3) (elt y 3) (elt z 3))))))
+	(loop
+	   for geometry across (slot-value spline 'geometry)
+	   collecting (make-coefficients geometry))))))
+
 ;;;--------------------------------------------------------------------
 ;;; a common geometry matrix form: sharing the last data point between
 ;;; geometry matrices.
