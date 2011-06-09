@@ -109,7 +109,12 @@
 
 (defgeneric coefficient-matrix (curve)
   (:documentation "Returns a list of coefficient matrices for the
-  polynomials that control the curve along each segment.")
+  polynomials that control the curve along each segment. The first
+  column of each matrix contains the coefficients for the polynomial
+  calculating the x coefficients (row 1 is the cubic coefficient, row
+  2 the quadratic coefficient, row 3 the linear coefficient, and row 4
+  the constant). Column 2 does the same for the y polynomial
+  coefficients, and column 3 for the z coefficients.")
   (:method ((spline matrix-spline))
     (with-accessors ((basis basis-matrix)) spline
       (labels ((make-coefficients (geometry)
