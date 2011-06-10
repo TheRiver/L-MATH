@@ -1,3 +1,9 @@
+2011-06-09  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* spline.lisp (coefficient-matrix): Made an easy way to find the
+	polynomial coefficients that control the shape of the splines /
+	curves.
+
 2011-06-08  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* spline.lisp (evaluate): Performs some error checking to ensure
