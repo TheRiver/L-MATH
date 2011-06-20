@@ -100,7 +100,9 @@
       	(error 'spline-geometry-error :format-control "The parameter may not be negative."))
       (when (>= geometry-index (cl:length geometry))
 	(format t "~A" geometry-index)
-      	(error 'spline-geometry-error :format-control "The parameter is too large for the geometry defining the spline."))
+      	(error 'spline-geometry-error
+	       :format-control "The parameter (~A) is too large for the geometry defining the spline (max possible parameter ~A)."
+	       :format-arguments (list parameter (maximum-parameter spline))))
       (let ((t-vec (lm:vector (expt t-val 3) (expt t-val 2) t-val 1)))
       	(lm:* t-vec (basis-matrix spline) (aref (slot-value spline 'geometry) geometry-index))))))
 

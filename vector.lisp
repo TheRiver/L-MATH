@@ -154,8 +154,8 @@
 (defmethod initialise-data ((vector vector) (size integer))
   (with-slots (data) vector
     (setf data (make-array size
-			   :element-type 'double-float
-			   :initial-element 0.0d0)))
+  			   :element-type 'double-float
+  			   :initial-element 0.0d0)))
   vector)
 
 (defmethod initialize-instance :after ((vector vector) &key size)
@@ -189,11 +189,11 @@
   (let ((vec (make-instance 'vector :size dim)))
     (when initial-elements
       (with-slots (data) vec
-	(loop
-	   for el in initial-elements
-	   for i from 0 below dim
-	   do
-	     (setf (aref data i) (coerce el 'double-float)))))
+    	(loop
+    	   for el in initial-elements
+    	   for i from 0 below dim
+    	   do
+    	     (setf (aref data i) (coerce el 'double-float)))))
     vec))
 
 (defun vector (&rest elements)
