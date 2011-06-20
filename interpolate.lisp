@@ -45,8 +45,8 @@
   the domain [0, 1]")
   (:method (start end (t-val real))
     (declare (type (or vector list) start end))
-    (let ((direction (- end start)))
-      (+ start (* direction t-val))))
+    (+ (* (1- t-val) start)
+       (* t-val end)))
   (:method ((start number) (end number) (t-val real))
     (+ start (* (- end start) t-val))))
 
