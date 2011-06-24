@@ -1,6 +1,9 @@
 2011-06-20  Rudy Neeser  <rudy.neeser@gmail.com>
-
 	* spline.lisp (evaluate): Some better error reporting.
+
+2011-06-11  Rudy Neeser  <rudy.neeser@gmail.com>
+	* interpolate.lisp (linear-interpolation): Modified this to use a
+	more standard linear interpolation form between points.
 
 2011-06-09  Rudy Neeser  <rudy.neeser@gmail.com>
 
