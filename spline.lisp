@@ -293,10 +293,10 @@ geometry points, or enought points."))
 ;;;--------------------------------------------------------------------
 ;;; Bézier curves
 
-(defclass bezier-curve (last-shared-spline)
+(defclass cubic-bezier-curve (last-shared-spline)
   ()
   (:default-initargs :basis-matrix (make-bezier-basis-matrix))
-  (:documentation "Represents a bézier curve."))
+  (:documentation "Represents a cubic bézier curve."))
 
 ;;;--------------------------------------------------------------------
 ;;; Uniform, non-rational b-splines
@@ -317,4 +317,50 @@ geometry points, or enought points."))
   Overhauser spine."))
 
 ;;;--------------------------------------------------------------------
+;;;--------------------------------------------------------------------
+
+(defclass bezier-curve (spline)
+  ((degree :type integer
+	   :accessor bezier-curve-degree
+	   :documentation "The degree of the curve. The default is to be cubic.")
+   (bernstein-polynomials :initform nil
+			  :type list
+			  :reader bernstein-polynomials
+			  :documentation "A cached list of
+			  berstein-polynomials, used in the
+			  calculation of the curve.")
+   (spline-geometry :initform nil
+		    :initarg :spline-geometry
+		    :documentation "A list of points defining the
+		    curve. For a cubic curve, that is 4 points. For a
+		    curve of degree n, there will be n+1 points."))
+  (:documentation "A general bezier curve class, which can be of any
+  degree (unlike CUBIC-BEZIER-CURVE, which is always cubic)."))
+
+(defmethod initialize-instance :after ((spline bezier-curve) &key (degree 3))
+  (setf (bezier-curve-degree spline) degree))
+
+(defmethod spline-geometry ((spline bezier-curve))
+  (slot-value spline 'spline-geometry))
+
+(defmethod set-spline-geometry ((spline bezier-curve) (geometry list))
+  "A list of points defining the bézier curve's geometry. For a curve
+  of degree n, there should be n+1 points."
+  (setf (slot-value spline 'spline-geometry) geometry))
+
+(defmethod (setf bezier-curve-degree) :after ((degree integer) (spline bezier-curve))
+  (when (not (plusp degree))
+    (error 'l-math-error :format-control "The degree of a bézier curve must be positive."))
+  (setf (slot-value spline 'bernstein-polynomials)
+	(loop
+	   for i from 0 upto degree
+	   collect (create-bernstein-polynomial degree i))))
+
+(defmethod evaluate ((spline bezier-curve) (t-val real))
+  "Evaluates the given bezier curve at the given parameter value."
+  (loop
+     for p in (spline-geometry spline)
+     for bern in (bernstein-polynomials spline)
+     for result = (* p (funcall bern t-val)) then (+ result (* p (funcall bern t-val)))
+     finally (return result)))
 

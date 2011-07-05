@@ -121,9 +121,15 @@
 	   #:spline-geometry
 	   #:set-spline-geometry
 	   #:hermite-curve
+	   #:cubic-bezier-curve
 	   #:bezier-curve
 	   #:unrbs-spline
 	   #:catmull-rom-spline
+	   ; Utilities
+	   #:factorial
+	   #:binomial-coefficient
+	   #:create-bernstein-polynomial
+	   #:evaluate-bernstein-polynomial
 	   )
   (:shadow #:vector
 	   #:zerop
