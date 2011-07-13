@@ -1,3 +1,4 @@
+(declaim (optimize (speed 0) (safety 3) (debug 3)))
 (in-package #:l-math)
 
 ;;; L-MATH: a library for simple linear algebra.
@@ -110,12 +111,178 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
   (funcall (create-bernstein-polynomial n i) t-val))
 
 
-(defun bezier-test (exp points t-val)
-  (loop
-     for i from 0 upto exp
-     for p in points
-     for result = (* p (evaluate-bernstein-polynomial exp i t-val)) then (+ result (* p (evaluate-bernstein-polynomial exp i t-val)))
-     finally (return result)))
-       
-
 ;;;--------------------------------------------------------------------------
+
+(defclass b-spline-knots ()
+  ((knots :initform nil
+	  :initarg :knots
+	  :type (or null (simple-array double-float))
+	  :accessor knots
+	  :documentation "An ascending collection of knots, stored with
+	  repetition.")
+   (multiplicity :initform nil
+		 :initarg :multiplicity
+		 :type (or null (simple-array fixnum))
+		 :accessor multiplicity
+		 :documentation "The multiplicity of the above knots."))
+  (:documentation "Some docs. You will likely find it more convenient
+  to construct instance of this class using MAKE-KNOTS."))
+
+(defmethod initialize-instance :after ((knots b-spline-knots) &key)
+  (unless (= (length (knots knots))
+	     (length (multiplicity knots)))
+    (error 'l-math-error :format-control "There are a different number of knots to specified multiplicity.")))
+
+(defun make-knots (knots multiplicity)
+  (declare (type list knots multiplicity))
+  (make-instance 'b-spline-knots
+		 :knots  (make-array (length knots) :element-type 'double-float
+				     :initial-contents (mapcar #'(lambda (knot)
+								   (coerce knot 'double-float))
+							       knots))
+		 :multiplicity (make-array (length multiplicity) :element-type 'fixnum
+					   :initial-contents (mapcar #'(lambda (multi)
+									 (coerce multi 'fixnum))
+								     multiplicity))))
+
+(defgeneric knot-count (knot-data)
+  (:documentation "Returns the number of knots in the data, taking in
+  to account multiplicity.")
+  (:method ((knot-data b-spline-knots))
+    (with-accessors ((multiplicity multiplicity)) knot-data
+      (loop
+	 for m across multiplicity
+	 sum m))))
+
+(defgeneric get-ith-knot (knot-data i)
+  (:documentation "Returns the ith knot, taking in to account
+  multiplicity.")
+  (:method ((knot-data b-spline-knots) (i integer))
+    (when (minusp i)
+      (error 'l-math-error :format-control "The knot index may not be negative."))
+    (with-accessors ((knots knots)
+		     (multiplicity multiplicity)) knot-data
+      (when (>= i (knot-count knot-data))
+	(error 'l-math-error :format-control "The index is larger than the number of knots."))
+      (loop
+	 for index from 0 below (length multiplicity)
+	 for m across multiplicity
+	 sum m into count
+	 while (<= count i)
+	 finally (return index)))))
+	   
+  
+
+(defgeneric find-knot-index (knot-data value)
+  (:documentation "Given knot and multiplicity data, this returns the
+  index in the knot array.")
+  (:method ((knot-data b-spline-knots) (value real))
+    (with-accessors ((knots knots)) knot-data
+      (when (minusp value)
+	(error 'l-math-error :format-control "Knot values may not be negative."))
+      (when (> value (aref knots (1- (length knots))))
+	(error 'l-math-error :format-control "This knot value is larger than the largest known know."))
+      (labels ((find-array (knot-array value start end)
+		 (declare (type (simple-array double-float) knot-array)
+			  (type real value)
+			  (type fixnum start end))
+		 (let ((middle (floor (/ (+ start end) 2))))
+		   (cond
+		     ((and (<= (aref knot-array middle) value)
+			   (> (aref knot-array (1+ middle)) value))
+		      middle)
+		     ((< (aref knot-array middle) value)
+		      (find-array knot-array value middle end))
+		     (t
+		      (find-array knot-array value start middle))))))
+	(find-array knots value 0 (1- (length knots)))))))
+	       
+
+(defun b-spline-basis (knot-data degree family parameter)
+  (declare (type b-spline-knots knot-data)
+	   (type fixnum degree)
+	   (type number parameter))
+  (when (minusp degree)
+    (error 'l-math-error :format-control "The degree of a b-spline may not be negative."))
+  (let ((current (get-ith-knot knot-data family))
+	(before (if (not (minusp (1- family)))
+		    (get-ith-knot knot-data (1- family))
+		    nil))
+	(nth-after (if (<= (knot-count knot-data) (+ family degree))
+		       nil
+		       (get-ith-knot knot-data (+ family degree))))
+	(nth-after-1 (if (or (<= degree 0)
+			     (<= (knot-count knot-data) (+ family (1- degree))))
+			 nil
+			 (get-ith-knot knot-data (+ family (1- degree))))))
+    (cond
+      ((zerop degree)
+       (if (and (not (null before))
+	        (<= before parameter)
+		(< parameter current))
+	   1
+	   0))
+      (t
+       (+ (cond
+	    ((or (null before)
+		 (null nth-after-1)
+		 (equivalent 0 (- nth-after-1 before)))
+	     (format t "zero first term.~%")
+	     0)				; Need to see if this term disappears.
+	    (t
+	     (* (/ (- parameter before)
+		   (- nth-after-1 before))
+		(b-spline-basis knot-data (1- degree) family parameter))))
+	  (cond
+	    ((or (null nth-after)
+		 (equivalent 0 (- nth-after current)))
+	     (format t "Zero second term.~%")
+	     0)
+	    (t
+	     (* (/ (- nth-after parameter)
+		   (- nth-after current))
+		(b-spline-basis knot-data (1- degree) (1+ family) parameter)))))))))
+
+
+;; (defun b-spline-basis (knot-data degree family parameter)
+;;   (declare (type b-spline-knots knot-data)
+;; 	   (type fixnum degree)
+;; 	   (type number parameter))
+;;   (when (minusp degree)
+;;     (error 'l-math-error :format-control "The degree of a b-spline may not be negative."))
+;;   (let ((current (get-ith-knot knot-data family))
+;; 	(before (when (not (zerop family))
+;; 		  (get-ith-knot knot-data (1- family))))
+;; 	(nth-after (get-ith-knot knot-data (+ family degree)))
+;; 	(nth-after-1 (get-ith-knot knot-data (+ family (1- degree)))))
+;;     (cond
+;;       ((zerop degree)
+;;        (format t "par ~A; cur ~A; bef ~A~%" parameter current before)
+;;        (format t "Zero! ~A~%" (list (not (null before))
+;; 				    (<= before parameter)
+;; 				    (< parameter current)))
+;;        (if (and (not (null before))
+;; 	        (<= before parameter)
+;; 		(< parameter current))
+;; 	   1
+;; 	   0))
+;;       (t
+;;        (+ (if (and before (not (equivalent 0 (- nth-after-1 before))))
+;; 	      (* (/ (- parameter before)
+;; 		    (- nth-after-1 before))
+;; 		 (b-spline-basis knot-data (1- degree) family parameter))
+;; 	      0)
+;; 	  (if (not (equivalent 0 (- nth-after current)))
+;; 	      (* (/ (- nth-after parameter)
+;; 		    (- nth-after current))
+;; 		 (b-spline-basis knot-data (1- degree) (1+ family) parameter))
+;; 	      0))))))
+
+
+(defun test-b-spline (knots points parameter)
+  (loop
+     for p in points
+     for i from 0
+     for result = (* p (b-spline-basis knots 3 i parameter)) then (+ result (* p (b-spline-basis knots 3 i parameter)))
+     do (format t "at ~A with result ~A~%" i (* p (b-spline-basis knots 3 i parameter)))
+     finally (return result)))
