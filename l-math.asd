@@ -56,6 +56,7 @@
 		 (:file "rotations")
 		 (:file "scale")
 		 (:file "translation")
+		 (:file "utility")
 		 (:file "interpolate")
 		 (:file "random")
 		 (:file "basis")

@@ -293,10 +293,10 @@ geometry points, or enought points."))
 ;;;--------------------------------------------------------------------
 ;;; Bézier curves
 
-(defclass bezier-curve (last-shared-spline)
+(defclass cubic-bezier-curve (last-shared-spline)
   ()
   (:default-initargs :basis-matrix (make-bezier-basis-matrix))
-  (:documentation "Represents a bézier curve."))
+  (:documentation "Represents a cubic bézier curve."))
 
 ;;;--------------------------------------------------------------------
 ;;; Uniform, non-rational b-splines
@@ -317,4 +317,109 @@ geometry points, or enought points."))
   Overhauser spine."))
 
 ;;;--------------------------------------------------------------------
+;;;--------------------------------------------------------------------
 
+(defclass bezier-curve (spline)
+  ((degree :type integer
+	   :accessor bezier-curve-degree
+	   :documentation "The degree of the curve. The default is to be cubic.")
+   (bernstein-polynomials :initform nil
+			  :type list
+			  :reader bernstein-polynomials
+			  :documentation "A cached list of
+			  berstein-polynomials, used in the
+			  calculation of the curve.")
+   (spline-geometry :initform nil
+		    :initarg :spline-geometry
+		    :documentation "A list of points defining the
+		    curve. For a cubic curve, that is 4 points. For a
+		    curve of degree n, there will be n+1 points."))
+  (:documentation "A general bezier curve class, which can be of any
+  degree (unlike CUBIC-BEZIER-CURVE, which is always cubic). Note that
+  this is a single curve, and not a piecewise spline. If you want a
+  piecewise generalisation of this, use the B-SPLINE class."))
+
+(defmethod initialize-instance :after ((spline bezier-curve) &key (degree 3))
+  (setf (bezier-curve-degree spline) degree))
+
+(defmethod spline-geometry ((spline bezier-curve))
+  (slot-value spline 'spline-geometry))
+
+(defmethod set-spline-geometry ((spline bezier-curve) (geometry list))
+  "A list of points defining the bézier curve's geometry. For a curve
+  of degree n, there should be n+1 points."
+  (setf (slot-value spline 'spline-geometry) geometry))
+
+(defmethod (setf bezier-curve-degree) :after ((degree integer) (spline bezier-curve))
+  (when (not (plusp degree))
+    (error 'l-math-error :format-control "The degree of a bézier curve must be positive."))
+  (setf (slot-value spline 'bernstein-polynomials)
+	(loop
+	   for i from 0 upto degree
+	   collect (create-bernstein-polynomial degree i))))
+
+(defmethod evaluate ((spline bezier-curve) (t-val real))
+  "Evaluates the given bezier curve at the given parameter value."
+  (loop
+     for p in (spline-geometry spline)
+     for bern in (bernstein-polynomials spline)
+     for result = (* p (funcall bern t-val)) then (+ result (* p (funcall bern t-val)))
+     finally (return result)))
+
+;;;--------------------------------------------------------------------
+;;;--------------------------------------------------------------------
+
+(defclass b-spline (spline)
+  ((points :initform nil
+	   :type list
+	   :initarg :points
+	   :accessor b-spline-points
+	   :documentation "A list of points used defining the b-spline polygon.")
+   (knots :initform nil
+	  :type (or null b-spline-knots)
+	  :initarg :knots
+	  :accessor b-spline-knots
+	  :documentation "A structure detailing the spline's knots.")
+   (degree :initform 3
+	   :type integer
+	   :initarg :degree
+	   :accessor b-spline-degree
+	   :documentation "The degree of the b-spline. This defaults to cubic."))
+  (:documentation "A non-uniform b-spline implementation."))
+
+(defmethod initialize-instance :after ((spline b-spline) &key uniform)
+  "UNIFORM: if true, will automatically create a set of uniform knots,
+  based on the b-spline's degree and number of points in the b-spline
+  polygon."
+  (with-accessors ((points b-spline-points)
+		   (degree b-spline-degree)) spline
+    (when uniform
+      (let ((num-knots (+ (* 2 (1- degree))
+			  (- (length points) degree))))
+	(setf (b-spline-knots spline)
+	      (make-knots (loop
+			     for i from 0 upto num-knots
+			     collect i)
+			  (loop
+			     repeat (1+ num-knots)
+			     collect 1)))))))
+					     
+									 
+
+(defmethod spline-geometry ((spline b-spline))
+  (b-spline-points spline))
+
+(defmethod set-spline-geometry ((spline b-spline) (geometry list))
+  "A list of points defining the spline's b-spline polygon."
+  (setf (b-spline-points spline) geometry))
+
+(defmethod evaluate ((spline b-spline) (parameter number))
+  (with-accessors ((knots b-spline-knots)
+		   (degree b-spline-degree)
+		   (points b-spline-points)) spline
+    (loop
+       for p in points
+       for i from 1
+       for result = (* p (b-spline-basis knots degree i parameter)) then (+ result (* p (b-spline-basis knots degree i parameter)))
+       do (format t "i is ~A; adding ~A~%" i (* p (b-spline-basis knots degree i parameter)))
+       finally (return result))))

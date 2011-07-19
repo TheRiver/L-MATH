@@ -1,3 +1,25 @@
+2011-07-05  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* spline.lisp (cubic-bezier-curve): Renamed BEZIER-CURVE to
+	CUBIC-BEZIER-CURVE.
+	(bezier-curve): Created a new BEZIER-CURVE class which uses
+	bernstein polynomials directly to calculate the curve. It is also
+	much faster than the matrix form, CUBIC-BEZIER-CURVE.
+
+	* utility.lisp (evaluate-bernstein-polygnomial): A way to evaluate
+	the bernstein polynomials.
+	(create-bernstein-polynomial): A function for creating an instance
+	of a bernstein polynomial.
+
+	* generics.lisp (zerop): Added an instance for numbers.
+
+2011-07-04  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* utility.lisp (#:l-math): Added a file for utility functions.
+	(factorial): Added a factorial function.
+	(binomial-coefficient): Calculates binomial-coefficients using
+	the slower factorial definition.
+
 2011-06-20  Rudy Neeser  <rudy.neeser@gmail.com>
 	* spline.lisp (evaluate): Some better error reporting.
 
