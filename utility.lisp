@@ -156,20 +156,20 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
 
 (defgeneric get-ith-knot (knot-data i)
   (:documentation "Returns the ith knot, taking in to account
-  multiplicity.")
+  multiplicity. The knot indices range begin at -1.")
   (:method ((knot-data b-spline-knots) (i integer))
-    (when (minusp i)
-      (error 'l-math-error :format-control "The knot index may not be negative."))
+    (when (< i -1)
+      (error 'l-math-error :format-control "The knot index may not be less than -1."))
     (with-accessors ((knots knots)
 		     (multiplicity multiplicity)) knot-data
       (when (>= i (knot-count knot-data))
 	(error 'l-math-error :format-control "The index is larger than the number of knots."))
-      (loop
-	 for index from 0 below (length multiplicity)
-	 for m across multiplicity
-	 sum m into count
-	 while (<= count i)
-	 finally (return index)))))
+      (aref knots (loop
+		     for index from 0 below (length multiplicity)
+		     for m across multiplicity
+		     sum m into count
+		     while (<= count (1+ i))
+		     finally (return index))))))
 	   
   
 
@@ -205,43 +205,22 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
   (when (minusp degree)
     (error 'l-math-error :format-control "The degree of a b-spline may not be negative."))
   (let ((current (get-ith-knot knot-data family))
-	(before (if (not (minusp (1- family)))
-		    (get-ith-knot knot-data (1- family))
-		    nil))
-	(nth-after (if (<= (knot-count knot-data) (+ family degree))
-		       nil
-		       (get-ith-knot knot-data (+ family degree))))
-	(nth-after-1 (if (or (<= degree 0)
-			     (<= (knot-count knot-data) (+ family (1- degree))))
-			 nil
-			 (get-ith-knot knot-data (+ family (1- degree))))))
+	(before (get-ith-knot knot-data (1- family)))
+	(nth-after (get-ith-knot knot-data (+ family degree)))
+	(nth-after-1 (get-ith-knot knot-data (+ family (1- degree)))))
     (cond
       ((zerop degree)
-       (if (and (not (null before))
-	        (<= before parameter)
+       (if (and (<= before parameter)
 		(< parameter current))
 	   1
 	   0))
       (t
-       (+ (cond
-	    ((or (null before)
-		 (null nth-after-1)
-		 (equivalent 0 (- nth-after-1 before)))
-	     (format t "zero first term.~%")
-	     0)				; Need to see if this term disappears.
-	    (t
-	     (* (/ (- parameter before)
-		   (- nth-after-1 before))
-		(b-spline-basis knot-data (1- degree) family parameter))))
-	  (cond
-	    ((or (null nth-after)
-		 (equivalent 0 (- nth-after current)))
-	     (format t "Zero second term.~%")
-	     0)
-	    (t
-	     (* (/ (- nth-after parameter)
-		   (- nth-after current))
-		(b-spline-basis knot-data (1- degree) (1+ family) parameter)))))))))
+       (+ (* (/ (- parameter before)
+		(- nth-after-1 before))
+	     (b-spline-basis knot-data (1- degree) family parameter))
+	  (* (/ (- nth-after parameter)
+		(- nth-after current))
+	     (b-spline-basis knot-data (1- degree) (1+ family) parameter)))))))
 
 
 ;; (defun b-spline-basis (knot-data degree family parameter)
