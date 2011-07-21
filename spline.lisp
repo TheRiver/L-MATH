@@ -419,7 +419,7 @@ geometry points, or enought points."))
 		   (points b-spline-points)) spline
     (loop
        for p in points
-       for i from 1
+       for i from 0
        for result = (* p (b-spline-basis knots degree i parameter)) then (+ result (* p (b-spline-basis knots degree i parameter)))
        do (format t "i is ~A; adding ~A~%" i (* p (b-spline-basis knots degree i parameter)))
        finally (return result))))
