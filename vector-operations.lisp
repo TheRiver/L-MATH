@@ -115,7 +115,11 @@ as lists."
   objects.")
   (:method ((vector vector) &rest vectors)
     (/ (reduce #'+ vectors :initial-value vector)
-       (1+ (length vectors)))))
+       (1+ (length vectors))))
+  (:method ((number number) &rest numbers)
+    "Calculates the average of a list of numbers."
+    (/ (reduce #'+ numbers :initial-value number)
+       (1+ (length numbers)))))
 
 ;;;-------------------------------------------------------------------
 ;;; Operations on numbers

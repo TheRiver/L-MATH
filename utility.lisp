@@ -133,6 +133,10 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
 	     (length (multiplicity knots)))
     (error 'l-math-error :format-control "There are a different number of knots to specified multiplicity.")))
 
+(defmethod print-object ((knots b-spline-knots) stream)
+  (print-unreadable-object (knots stream :identity t :type t)
+    (format stream "~{~A~^, ~}" (loop for i across (knots knots) collect i))))
+
 (defun make-knots (knots multiplicity)
   (declare (type list knots multiplicity))
   (make-instance 'b-spline-knots
@@ -154,12 +158,13 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
 	 for m across multiplicity
 	 sum m))))
 
-(defgeneric get-ith-knot (knot-data i)
+(defgeneric get-ith-knot (knot-data i &optional offset)
   (:documentation "Returns the ith knot, taking in to account
-  multiplicity. The knot indices range begin at -1.")
-  (:method ((knot-data b-spline-knots) (i integer))
-    (when (< i -1)
-      (error 'l-math-error :format-control "The knot index may not be less than -1."))
+  multiplicity. OFFSET should be positive number that array indices
+  are offset by.")
+  (:method ((knot-data b-spline-knots) (i integer) &optional (offset 0))
+    ;; (when (< i -1)
+    ;;   (error 'l-math-error :format-control "The knot index may not be less than -1."))
     (with-accessors ((knots knots)
 		     (multiplicity multiplicity)) knot-data
       (when (>= i (knot-count knot-data))
@@ -168,7 +173,7 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
 		     for index from 0 below (length multiplicity)
 		     for m across multiplicity
 		     sum m into count
-		     while (<= count (1+ i))
+		     while (<= count (+ offset i))
 		     finally (return index))))))
 	   
   
@@ -198,16 +203,16 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
 	(find-array knots value 0 (1- (length knots)))))))
 	       
 
-(defun b-spline-basis (knot-data degree family parameter)
+(defun b-spline-basis (knot-data degree family parameter &optional (offset degree))
   (declare (type b-spline-knots knot-data)
 	   (type fixnum degree)
 	   (type number parameter))
   (when (minusp degree)
     (error 'l-math-error :format-control "The degree of a b-spline may not be negative."))
-  (let ((current (get-ith-knot knot-data family))
-	(before (get-ith-knot knot-data (1- family)))
-	(nth-after (get-ith-knot knot-data (+ family degree)))
-	(nth-after-1 (get-ith-knot knot-data (+ family (1- degree)))))
+  (let ((current (get-ith-knot knot-data family offset))
+	(before (get-ith-knot knot-data (1- family) offset))
+	(nth-after (get-ith-knot knot-data (+ family degree) offset))
+	(nth-after-1 (get-ith-knot knot-data (+ family (1- degree)) offset)))
     (cond
       ((zerop degree)
        (if (and (<= before parameter)
@@ -217,10 +222,10 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
       (t
        (+ (* (/ (- parameter before)
 		(- nth-after-1 before))
-	     (b-spline-basis knot-data (1- degree) family parameter))
+	     (b-spline-basis knot-data (1- degree) family parameter offset))
 	  (* (/ (- nth-after parameter)
 		(- nth-after current))
-	     (b-spline-basis knot-data (1- degree) (1+ family) parameter)))))))
+	     (b-spline-basis knot-data (1- degree) (1+ family) parameter offset)))))))
 
 
 ;; (defun b-spline-basis (knot-data degree family parameter)
