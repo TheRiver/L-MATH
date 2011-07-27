@@ -394,17 +394,41 @@ geometry points, or enought points."))
   (with-accessors ((points b-spline-points)
 		   (degree b-spline-degree)) spline
     (when uniform
-      (let ((num-knots (+ (* 2 (1- degree))
-			  (- (length points) degree))))
+      (let ((num-knots (number-needed-knots (length points) degree)))
 	(setf (b-spline-knots spline)
 	      (make-knots (loop
-			     for i from 0 upto num-knots
+			     repeat num-knots
+			     for i from (- degree)
 			     collect i)
 			  (loop
-			     repeat (1+ num-knots)
-			     collect 1)))))))
-					     
-									 
+			     repeat num-knots
+			     collect 1)))))
+    (when (null (b-spline-knots spline))
+      (error 'l-math-error
+	     :format-control "No knots have been provided, or requested to be generated (eg, see :uniform keyword)"))
+    (when (< (number-needed-knots (length points) degree)
+	     (knot-count (b-spline-knots spline)))
+      (error 'l-math-error :format-control "This spline requires at least ~A knots."
+	     :format-arguments (list (number-needed-knots (length points) degree))))))
+
+(defgeneric b-spline-low-parameter (spline)
+  (:documentation "Given a b-spline, this returns the lowest possible
+  parameter value that it will accept.")
+  (:method ((spline b-spline))
+    (low-parameter (b-spline-knots spline) (b-spline-degree spline))))
+
+(defgeneric b-spline-high-parameter (spline)
+  (:documentation "Given a b-spline, this returns the highest pssible
+  parameter value that it will accept.")
+  (:method ((spline b-spline))
+    (high-parameter (b-spline-knots spline) (b-spline-degree spline))))
+
+(defmethod print-object ((spline b-spline) stream)
+  (print-unreadable-object (spline stream :type t :identity t)
+    (format stream "parameter in [~A, ~A]"
+	    (b-spline-low-parameter spline)
+	    (b-spline-high-parameter spline))))
+
 
 (defmethod spline-geometry ((spline b-spline))
   (b-spline-points spline))
@@ -417,9 +441,12 @@ geometry points, or enought points."))
   (with-accessors ((knots b-spline-knots)
 		   (degree b-spline-degree)
 		   (points b-spline-points)) spline
+    ;; (unless (and (<= parameter (b-spline-high-parameter spline))
+    ;; 		 (>= parameter (b-spline-low-parameter spline)))
+    ;;   (error 'l-math-error :format-control "The given parameter (~A) should lay between ~A and ~A."
+    ;; 	     :format-arguments (list parameter (b-spline-low-parameter spline) (b-spline-high-parameter spline))))
     (loop
        for p in points
        for i from (1+ (- (b-spline-degree spline)))
        for result = (* p (b-spline-basis knots degree i parameter)) then (+ result (* p (b-spline-basis knots degree i parameter)))
-       do (format t "i is ~A; adding ~A~%" i (* p (b-spline-basis knots degree i parameter)))
        finally (return result))))

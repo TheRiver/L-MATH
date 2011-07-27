@@ -126,6 +126,10 @@
 	   #:unrbs-spline
 	   #:catmull-rom-spline
 	   #:b-spline
+	   #:b-spline-knots
+	   #:b-spline-degree
+	   #:b-spline-low-parameter
+	   #:b-spline-high-parameter
 	   ; Utilities
 	   #:factorial
 	   #:binomial-coefficient
@@ -134,6 +138,7 @@
 	   #:b-spline-basis
 	   #:b-spline-knots
 	   #:knots
+	   #:make-knots
 	   #:multiplicity
 	   )
   (:shadow #:vector
