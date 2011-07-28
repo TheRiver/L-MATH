@@ -133,10 +133,6 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
 	     (length (multiplicity knots)))
     (error 'l-math-error :format-control "There are a different number of knots to specified multiplicity.")))
 
-(defmethod print-object ((knots b-spline-knots) stream)
-  (print-unreadable-object (knots stream :identity t :type t)
-    (format stream "~{~A~^, ~}" (loop for i across (knots knots) collect i))))
-
 (defun make-knots (knots multiplicity)
   (declare (type list knots multiplicity))
   (make-instance 'b-spline-knots
@@ -149,6 +145,32 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
 									 (coerce multi 'fixnum))
 								     multiplicity))))
 
+(defgeneric all-knots (knots)
+  (:documentation "Given a knots data structure, this will list all
+  knots, including multiplicities.")
+  (:method ((knots-data b-spline-knots))
+    (with-accessors ((knots knots)
+		     (multiplicity multiplicity)) knots-data
+      (let ((count (length knots)))
+	(labels ((handle-index (index count accum)
+		   (cond
+		     ((< count (aref multiplicity index))
+		      (handle-index index (1+ count) (cons (aref knots index) accum)))
+		     (t
+		      accum)))
+		 (determine-knots (index accum)
+		   (cond
+		     ((< index count)
+		      (determine-knots (1+ index) (append (handle-index index 0 nil)
+							  accum)))
+		     (t
+		      accum))))
+	  (nreverse (determine-knots 0 nil)))))))
+
+(defmethod print-object ((knots b-spline-knots) stream)
+  (print-unreadable-object (knots stream :identity t :type t)
+    (format stream "~{~A~^, ~}" (all-knots knots))))
+
 (defgeneric knot-count (knot-data)
   (:documentation "Returns the number of knots in the data, taking in
   to account multiplicity.")
@@ -157,6 +179,26 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
       (loop
 	 for m across multiplicity
 	 sum m))))
+
+(defgeneric low-parameter (knot-data degree)
+  (:documentation "Given a knot sequence and the degree of the spline,
+  this returns the lowest possible parameter value the spline will
+  accept.")
+  (:method ((knots b-spline-knots) (degree integer))
+    (get-ith-knot knots degree)))
+
+(defgeneric high-parameter (knot-data degree)
+  (:documentation "Given a knot sequence and the degree of the spline,
+  this returns the highest possible parameter value the spline will
+  aceept.")
+  (:method ((knots b-spline-knots) (degree integer))
+    (get-ith-knot knots (- (knot-count knots) (1+ degree)))))
+
+(defun number-needed-knots (num-points degree)
+  "Given the number of points making up a spline, and the degree of
+  the spline, this will tell us the number of required knots."
+  (+ 1 degree num-points))
+  
 
 (defgeneric get-ith-knot (knot-data i &optional offset)
   (:documentation "Returns the ith knot, taking in to account
@@ -220,53 +262,29 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
 	   1
 	   0))
       (t
-       (+ (* (/ (- parameter before)
-		(- nth-after-1 before))
-	     (b-spline-basis knot-data (1- degree) family parameter offset))
-	  (* (/ (- nth-after parameter)
-		(- nth-after current))
-	     (b-spline-basis knot-data (1- degree) (1+ family) parameter offset)))))))
+       (+ (if (equivalent (- nth-after-1 before) 0)
+       	      0
+       	      (* (/ (- parameter before)
+       		    (- nth-after-1 before))
+       		 (b-spline-basis knot-data (1- degree) family parameter offset)))
+       	  (if (equivalent (- nth-after current) 0)
+       	      0
+       	      (* (/ (- nth-after parameter)
+       		    (- nth-after current))
+       		 (b-spline-basis knot-data (1- degree) (1+ family) parameter offset))))))))
 
 
-;; (defun b-spline-basis (knot-data degree family parameter)
-;;   (declare (type b-spline-knots knot-data)
-;; 	   (type fixnum degree)
-;; 	   (type number parameter))
-;;   (when (minusp degree)
-;;     (error 'l-math-error :format-control "The degree of a b-spline may not be negative."))
-;;   (let ((current (get-ith-knot knot-data family))
-;; 	(before (when (not (zerop family))
-;; 		  (get-ith-knot knot-data (1- family))))
-;; 	(nth-after (get-ith-knot knot-data (+ family degree)))
-;; 	(nth-after-1 (get-ith-knot knot-data (+ family (1- degree)))))
-;;     (cond
-;;       ((zerop degree)
-;;        (format t "par ~A; cur ~A; bef ~A~%" parameter current before)
-;;        (format t "Zero! ~A~%" (list (not (null before))
-;; 				    (<= before parameter)
-;; 				    (< parameter current)))
-;;        (if (and (not (null before))
-;; 	        (<= before parameter)
-;; 		(< parameter current))
-;; 	   1
-;; 	   0))
-;;       (t
-;;        (+ (if (and before (not (equivalent 0 (- nth-after-1 before))))
-;; 	      (* (/ (- parameter before)
-;; 		    (- nth-after-1 before))
-;; 		 (b-spline-basis knot-data (1- degree) family parameter))
-;; 	      0)
-;; 	  (if (not (equivalent 0 (- nth-after current)))
-;; 	      (* (/ (- nth-after parameter)
-;; 		    (- nth-after current))
-;; 		 (b-spline-basis knot-data (1- degree) (1+ family) parameter))
-;; 	      0))))))
+(defun test-3-3 (u)
+  "This is family 1."
+  (* 1/6 (expt u 3)))
 
+(defun test-3-2 (u)
+  "This is family 0."
+  (+ 1/6 (* 1/2 u) (* -1/2 (expt u 2)) (* -1/2 (expt u 3))))
 
-(defun test-b-spline (knots points parameter)
-  (loop
-     for p in points
-     for i from 0
-     for result = (* p (b-spline-basis knots 3 i parameter)) then (+ result (* p (b-spline-basis knots 3 i parameter)))
-     do (format t "at ~A with result ~A~%" i (* p (b-spline-basis knots 3 i parameter)))
-     finally (return result)))
+(defun test-3-1 (u)
+  (+ 4/6 (- (expt u 2)) (* 1/2 (expt u 3))))
+
+(defun test-3-0 (u)
+  (+ 1/6 (* -1/2 u) (* 1/2 (expt u 2)) (* -1/6 (expt u 3))))
+  
