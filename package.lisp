@@ -118,6 +118,7 @@
 	   #:coefficient-matrix
 	   #:evaluate
 	   #:maximum-parameter
+	   #:minimum-parameter
 	   #:spline-geometry
 	   #:set-spline-geometry
 	   #:hermite-curve
@@ -128,8 +129,6 @@
 	   #:b-spline
 	   #:b-spline-knots
 	   #:b-spline-degree
-	   #:b-spline-low-parameter
-	   #:b-spline-high-parameter
 	   ; Utilities
 	   #:factorial
 	   #:binomial-coefficient

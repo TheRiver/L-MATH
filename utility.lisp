@@ -221,16 +221,19 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
 (defun find-starting-knot-index (knot-data degree parameter)
   "Given knot data, the degree of a spline, and a parameter, this
   locates the first index of the knots which will be used to define
-  the point on the given spline."
+  the point on the given spline. Returns first the b-spline-basis
+  family to be used, and then the offset index of the knot."
   (check-type knot-data b-spline-knots)
   (with-accessors ((knots knots)
 		   (multiplicity multiplicity)) knot-data
-    (loop
-       for knot across knots
-       for mult across multiplicity
-       for index = 0 then (+ index mult)
-       while (<= knot parameter)
-       finally (return (- index degree)))))
+    (let ((index (loop
+		    for knot across knots
+		    for mult across multiplicity
+		    for index = 0 then (+ index mult)
+		    while (<= knot parameter)
+		    finally (return (- index degree)))))
+      (values (- index degree)
+	      index))))
 
 ;; (defgeneric find-knot-index (knot-data value)
 ;;   (:documentation "Given knot and multiplicity data, this returns the
