@@ -1,4 +1,3 @@
-(declaim (optimize (speed 0) (safety 3) (debug 3)))
 (in-package #:l-math)
 
 ;;; L-MATH: a library for simple linear algebra.
@@ -423,12 +422,14 @@ geometry points, or enought points."))
 			     collect i)
 			  (loop
 			     repeat num-knots
-			     collect 1)))))
+			     collect 1)
+			  :add-phantoms nil))))
     (when (null (b-spline-knots spline))
       (error 'l-math-error
 	     :format-control "No knots have been provided, or requested to be generated (eg, see :uniform keyword)"))
-    (when (< (number-needed-knots (length points) degree)
-	     (knot-count (b-spline-knots spline)))
+    (when (< (knot-count (b-spline-knots spline))
+	     (number-needed-knots (length points) degree))
+      (format t "Knot-count: ~A~%" (knot-count (b-spline-knots spline)))
       (error 'l-math-error :format-control "This spline requires at least ~A knots."
 	     :format-arguments (list (number-needed-knots (length points) degree))))))
 

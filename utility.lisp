@@ -1,4 +1,3 @@
-(declaim (optimize (speed 0) (safety 3) (debug 3)))
 (in-package #:l-math)
 
 ;;; L-MATH: a library for simple linear algebra.
@@ -125,6 +124,14 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
 		 :type (or null (simple-array fixnum))
 		 :accessor multiplicity
 		 :documentation "The multiplicity of the above knots.")
+   (knot-count :initform 0
+	       :type fixnum
+	       :reader knot-count
+	       :documentation "The number of knots, taking in to account multiplicity.")
+   (no-multiplicity :initform nil
+		    :reader no-multiplicity-p
+		    :documentation "Indicates whether there is a
+		    multiplicity or not in the knots.")
    (uniform :initform nil
 	    :reader uniform-p
 	    :documentation "A boolean indicating whether this is a
@@ -134,23 +141,51 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
   B-SPLINE-BASIS requires a phantom knot on either end of the knot
   sequence. MAKE-KNOTS will automatically add those knots for you."))
 
+(defgeneric calculate-knot-count (knot-data)
+  (:documentation "Returns the number of knots in the data, taking in
+  to account multiplicity. Sets KNOT-COUNT accordingly.")
+  (:method ((knot-data b-spline-knots))
+    (setf (slot-value knot-data 'knot-count)
+	  (with-accessors ((multiplicity multiplicity)) knot-data
+	    (loop
+	       for m across multiplicity
+	       sum m)))))
+
+(defgeneric calculate-uniformity (knot-data)
+  (:documentation "Calculates whether the knot-data is uniform or
+  not. Sets UNIFORM-P accordingly.")
+  (:method ((knot-data b-spline-knots))
+    (with-accessors ((knots knots)
+		     (multiplicity multiplicity)) knot-data
+      (setf (slot-value knot-data 'no-multiplicity)
+	    (every #'(lambda (item)
+		       (= item 1))
+		   multiplicity))
+      (setf (slot-value knot-data 'uniform) 
+	    (and (no-multiplicity-p knot-data)
+		 (let ((distance (- (aref knots 1) (aref knots 0))))
+		   (loop
+		      for i from 0 below (length knots)
+		      for j from 1 below (length knots)
+		      always (equivalent distance (- (aref knots j)
+						     (aref knots i))))))))))
+
 (defmethod initialize-instance :after ((knot-data b-spline-knots) &key)
   (with-accessors ((knots knots)
 		   (multiplicity multiplicity)) knot-data
     (unless (= (length knots)
 	       (length multiplicity))
       (error 'l-math-error :format-control "There are a different number of knots to specified multiplicity."))
-    (when (and (every #'(lambda (item)
-			  (= item 1))
-		      multiplicity)
-	       (let ((distance (- (aref knots 1) (aref knots 0))))
-		 (loop
-		    for i from 0 below (length knots)
-		    for j from 1 below (length knots)
-		    always (equivalent distance (- (aref knots j)
-						   (aref knots i))))))
-      (setf (slot-value knot-data 'uniform) t))))
+    (calculate-knot-count knot-data)
+    (calculate-uniformity knot-data)))
 
+(defmethod (setf knots) :after (item (knot-data b-spline-knots))
+  (calculate-uniformity knot-data)
+  (calculate-knot-count knot-data))
+
+(defmethod (setf multiplicity) :after (item (knot-data b-spline-knots))
+  (calculate-uniformity knot-data)
+  (calculate-knot-count knot-data))
 
 (defun make-knots (knots multiplicity &key (add-phantoms t))
   "Creates a knot sequence. Notice that this will add some phantom
@@ -163,7 +198,8 @@ false."
 		   knots))
 	(multiplicity (if add-phantoms
 			  (append (cons 1 multiplicity)
-				  (list 1)))))
+				  (list 1))
+			  multiplicity)))
     (make-instance 'b-spline-knots
 		   :knots  (make-array (length knots) :element-type 'double-float
 				       :initial-contents (mapcar #'(lambda (knot)
@@ -200,15 +236,6 @@ false."
   (print-unreadable-object (knots stream :identity t :type t)
     (format stream "~{~A~^, ~}" (all-knots knots))))
 
-(defgeneric knot-count (knot-data)
-  (:documentation "Returns the number of knots in the data, taking in
-  to account multiplicity.")
-  (:method ((knot-data b-spline-knots))
-    (with-accessors ((multiplicity multiplicity)) knot-data
-      (loop
-	 for m across multiplicity
-	 sum m))))
-
 (defgeneric low-parameter (knot-data degree)
   (:documentation "Given a knot sequence and the degree of the spline,
   this returns the lowest possible parameter value the spline will
@@ -234,18 +261,21 @@ false."
   multiplicity. OFFSET should be positive number that array indices
   are offset by.")
   (:method ((knot-data b-spline-knots) (i integer) &optional (offset 0))
-    ;; (when (< i -1)
-    ;;   (error 'l-math-error :format-control "The knot index may not be less than -1."))
     (with-accessors ((knots knots)
 		     (multiplicity multiplicity)) knot-data
       (when (>= i (knot-count knot-data))
 	(error 'l-math-error :format-control "The index is larger than the number of knots."))
-      (aref knots (loop
-		     for index from 0 below (length multiplicity)
-		     for m across multiplicity
-		     sum m into count
-		     while (<= count (+ offset i))
-		     finally (return index))))))
+      (cond
+	((no-multiplicity-p knot-data)
+	 ;; Can speed this up in the uniform case.
+	 (aref knots (+ i offset)))
+	(t
+	 (aref knots (loop
+			for index from 0 below (length multiplicity)
+			for m across multiplicity
+			sum m into count
+			while (<= count (+ offset i))
+			finally (return index))))))))
 	   
 (defun find-starting-knot-index (knot-data degree parameter)
   "Given knot data, the degree of a spline, and a parameter, this
