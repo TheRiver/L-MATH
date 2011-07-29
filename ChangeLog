@@ -1,3 +1,14 @@
+2011-07-29  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* utility.lisp (b-spline-knots): The knot data structure now
+	has a boolean to indicate whether there are multiplicities or not.
+	(get-ith-knot): Has an easy speedup for when there are no
+	multiplicities.
+
+	* spline.lisp (b-spline): Added a B-SPLINE class, which represents
+	non-uniform b-splines, although it has much code to speed up the
+	uniform cubic and quadratic cases.
+
 2011-07-05  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* spline.lisp (cubic-bezier-curve): Renamed BEZIER-CURVE to
