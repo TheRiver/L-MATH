@@ -297,7 +297,7 @@ geometry points, or enought points."))
 (defclass hermite-curve (last-shared-spline)
   ()
   (:default-initargs :basis-matrix (make-hermite-basis-matrix))
-  (:documentation "Represents a hermite curve."))
+  (:documentation "Represents a hermite curve in 3-space."))
 
 ;;;--------------------------------------------------------------------
 ;;; Bézier curves
@@ -305,7 +305,7 @@ geometry points, or enought points."))
 (defclass cubic-bezier-curve (last-shared-spline)
   ()
   (:default-initargs :basis-matrix (make-bezier-basis-matrix))
-  (:documentation "Represents a cubic bézier curve."))
+  (:documentation "Represents a cubic bézier curve in 3-space."))
 
 ;;;--------------------------------------------------------------------
 ;;; Uniform, non-rational b-splines
@@ -313,7 +313,7 @@ geometry points, or enought points."))
 (defclass unrbs-spline (three-shared-spline)
   ()
   (:default-initargs :basis-matrix (make-uniform-nonrational-bspline-basis-matrix))
-  (:documentation "A uniform, non-rational b-spline."))
+  (:documentation "A uniform, non-rational b-spline in 3-space."))
 
 ;;;--------------------------------------------------------------------
 ;;; Catmul-rom splines
@@ -321,7 +321,7 @@ geometry points, or enought points."))
 (defclass catmull-rom-spline (three-shared-spline)
   ()
   (:default-initargs :basis-matrix (make-catmull-rom-basis-matrix))
-  (:documentation "The interpolating catmull-rom spline. This spline
+  (:documentation "The interpolating catmull-rom spline in 3-space. This spline
   passes through all of its control points. It is also called the
   Overhauser spine."))
 
@@ -403,7 +403,10 @@ geometry points, or enought points."))
 	   :initarg :degree
 	   :accessor b-spline-degree
 	   :documentation "The degree of the b-spline. This defaults to cubic."))
-  (:documentation "A non-uniform b-spline implementation."))
+  (:documentation "A non-uniform b-spline implementation. It has much
+  code to speed up the uniform quadratic and cubic cases, however. But
+  it supports arbitrary degree non-uniform b-splines in an arbtirary
+  n-dimensional space."))
 
 (defmethod initialize-instance :after ((spline b-spline) &key uniform)
   "UNIFORM: if true, will automatically create a set of uniform knots,
@@ -467,6 +470,7 @@ geometry points, or enought points."))
       (loop
 	 for p in (nthcdr (1- index) points)
 	 for i from family to (+ family degree)
-	 for result = (* p (b-spline-basis knots degree i parameter)) then (+ result (* p (b-spline-basis knots degree i parameter)))
+	 for fi from 0
+	 for result = (* p (b-spline-basis knots degree i parameter :fast-spline-index fi)) then (+ result (* p (b-spline-basis knots degree i parameter :fast-spline-index fi)))
 	 finally (return result)))))
     

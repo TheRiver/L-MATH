@@ -1,3 +1,9 @@
+2011-07-29  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* spline.lisp (b-spline): Added a B-SPLINE class, which represents
+	non-uniform b-splines, although it has much code to speed up the
+	uniform cubic and quadratic cases.
+
 2011-07-05  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* spline.lisp (cubic-bezier-curve): Renamed BEZIER-CURVE to
