@@ -1,3 +1,4 @@
+(declaim (optimize (speed 0) (safety 3) (debug 3)))
 (in-package #:l-math)
 
 ;;; L-MATH: a library for simple linear algebra.
@@ -65,6 +66,10 @@
   (:documentation "Returns the maximum value that the spline parameter
   may take."))
 
+(defgeneric minimum-parameter (spline)
+  (:documentation "Returns the minimum value that the spline parameter
+  may take."))
+
 ;;;--------------------------------------------------------------------
 
 (defclass matrix-spline (spline)
@@ -108,6 +113,10 @@
 
 (defmethod maximum-parameter ((spline matrix-spline))
   (length (slot-value spline 'geometry)))
+
+(defmethod minimum-parameter ((spline matrix-spline))
+  (declare (ignore spline))
+  0)
 
 (defgeneric coefficient-matrix (curve)
   (:documentation "Returns a list of coefficient matrices for the
@@ -342,6 +351,15 @@ geometry points, or enought points."))
 (defmethod initialize-instance :after ((spline bezier-curve) &key (degree 3))
   (setf (bezier-curve-degree spline) degree))
 
+(defmethod maximum-parameter ((spline bezier-curve))
+  (declare (ignore spline))
+  1)
+
+(defmethod minimum-parameter ((spline bezier-curve))
+  (declare (ignore spline))
+  0)
+			      
+
 (defmethod spline-geometry ((spline bezier-curve))
   (slot-value spline 'spline-geometry))
 
@@ -411,23 +429,17 @@ geometry points, or enought points."))
       (error 'l-math-error :format-control "This spline requires at least ~A knots."
 	     :format-arguments (list (number-needed-knots (length points) degree))))))
 
-(defgeneric b-spline-low-parameter (spline)
-  (:documentation "Given a b-spline, this returns the lowest possible
-  parameter value that it will accept.")
-  (:method ((spline b-spline))
-    (low-parameter (b-spline-knots spline) (b-spline-degree spline))))
+(defmethod minimum-parameter ((spline b-spline))
+    (low-parameter (b-spline-knots spline) (b-spline-degree spline)))
 
-(defgeneric b-spline-high-parameter (spline)
-  (:documentation "Given a b-spline, this returns the highest pssible
-  parameter value that it will accept.")
-  (:method ((spline b-spline))
-    (high-parameter (b-spline-knots spline) (b-spline-degree spline))))
+(defmethod maximum-parameter ((spline b-spline))
+    (high-parameter (b-spline-knots spline) (b-spline-degree spline)))
 
 (defmethod print-object ((spline b-spline) stream)
   (print-unreadable-object (spline stream :type t :identity t)
     (format stream "parameter in [~A, ~A]"
-	    (b-spline-low-parameter spline)
-	    (b-spline-high-parameter spline))))
+	    (minimum-parameter spline)
+	    (maximum-parameter spline))))
 
 
 (defmethod spline-geometry ((spline b-spline))
@@ -441,12 +453,20 @@ geometry points, or enought points."))
   (with-accessors ((knots b-spline-knots)
 		   (degree b-spline-degree)
 		   (points b-spline-points)) spline
-    ;; (unless (and (<= parameter (b-spline-high-parameter spline))
-    ;; 		 (>= parameter (b-spline-low-parameter spline)))
-    ;;   (error 'l-math-error :format-control "The given parameter (~A) should lay between ~A and ~A."
-    ;; 	     :format-arguments (list parameter (b-spline-low-parameter spline) (b-spline-high-parameter spline))))
-    (loop
-       for p in points
-       for i from (1+ (- (b-spline-degree spline)))
-       for result = (* p (b-spline-basis knots degree i parameter)) then (+ result (* p (b-spline-basis knots degree i parameter)))
-       finally (return result))))
+    (unless (and (<= parameter (maximum-parameter spline))
+    		 (>= parameter (minimum-parameter spline)))
+      (error 'l-math-error :format-control "The given parameter (~A) should lay between ~A and ~A."
+    	     :format-arguments (list parameter (minimum-parameter spline) (maximum-parameter spline))))
+    (multiple-value-bind (family index)
+	(find-starting-knot-index knots degree parameter)
+      ;; We only want to make use of the least number of points that
+      ;; affect the spline.  And so we calculate the "family" of the
+      ;; b-spline bases that we want to use, while the index tells us
+      ;; which spline segment we are calculating (which lets us know
+      ;; which points we want to use.
+      (loop
+	 for p in (nthcdr (1- index) points)
+	 for i from family to (+ family degree)
+	 for result = (* p (b-spline-basis knots degree i parameter)) then (+ result (* p (b-spline-basis knots degree i parameter)))
+	 finally (return result)))))
+    

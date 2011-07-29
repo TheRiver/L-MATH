@@ -218,32 +218,22 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
 		     while (<= count (+ offset i))
 		     finally (return index))))))
 	   
-  
-
-(defgeneric find-knot-index (knot-data value)
-  (:documentation "Given knot and multiplicity data, this returns the
-  index in the knot array.")
-  (:method ((knot-data b-spline-knots) (value real))
-    (with-accessors ((knots knots)) knot-data
-      (when (minusp value)
-	(error 'l-math-error :format-control "Knot values may not be negative."))
-      (when (> value (aref knots (1- (length knots))))
-	(error 'l-math-error :format-control "This knot value is larger than the largest known know."))
-      (labels ((find-array (knot-array value start end)
-		 (declare (type (simple-array double-float) knot-array)
-			  (type real value)
-			  (type fixnum start end))
-		 (let ((middle (floor (/ (+ start end) 2))))
-		   (cond
-		     ((and (<= (aref knot-array middle) value)
-			   (> (aref knot-array (1+ middle)) value))
-		      middle)
-		     ((< (aref knot-array middle) value)
-		      (find-array knot-array value middle end))
-		     (t
-		      (find-array knot-array value start middle))))))
-	(find-array knots value 0 (1- (length knots)))))))
-	       
+(defun find-starting-knot-index (knot-data degree parameter)
+  "Given knot data, the degree of a spline, and a parameter, this
+  locates the first index of the knots which will be used to define
+  the point on the given spline. Returns first the b-spline-basis
+  family to be used, and then the offset index of the knot."
+  (check-type knot-data b-spline-knots)
+  (with-accessors ((knots knots)
+		   (multiplicity multiplicity)) knot-data
+    (let ((index (loop
+		    for knot across knots
+		    for mult across multiplicity
+		    for index = 0 then (+ index mult)
+		    while (<= knot parameter)
+		    finally (return (- index degree)))))
+      (values (- index degree)
+	      index))))
 
 (defun b-spline-basis (knot-data degree family parameter &optional (offset degree))
   (declare (type b-spline-knots knot-data)
@@ -261,17 +251,34 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
 		(< parameter current))
 	   1
 	   0))
+      ;; ((= degree 2)
+      ;;  ;; Some code to speed up the quadratic case. First, we need
+      ;;  ;; to shift the parameter to begin at 0.
+      ;;  (let ((u (abs (second (multiple-value-list (truncate parameter))))))
+      ;; 	 (ecase (mod (+ family 1) 3)
+      ;; 	   (2 (* 1/2 (expt u 2)))
+      ;; 	   (1 (+ 1/2 u (- (expt u 2))))
+      ;; 	   (0 (+ 1/2 (- u) (* 1/2 (expt u 2)))))))
+      ;; ((= degree 3)
+      ;;  ;; Some code to speed up the quadratic case. First, we need
+      ;;  ;; to shift the parameter to begin at 0.
+      ;;  (let ((u (abs (second (multiple-value-list (truncate parameter))))))
+      ;; 	 (ecase (mod (+ family 2) 4)
+      ;; 	   (3 (* 1/6 (expt u 3)))
+      ;; 	   (2 (+ 1/6 (* 1/2 u) (* -1/2 (expt u 2)) (* -1/2 (expt u 3))))
+      ;; 	   (1 (+ 4/6 (- (expt u 2)) (* 1/2 (expt u 3))))
+      ;; 	   (0 (+ 1/6 (* -1/2 u) (* 1/2 (expt u 2)) (* -1/6 (expt u 3)))))))
       (t
        (+ (if (equivalent (- nth-after-1 before) 0)
-       	      0
-       	      (* (/ (- parameter before)
-       		    (- nth-after-1 before))
-       		 (b-spline-basis knot-data (1- degree) family parameter offset)))
-       	  (if (equivalent (- nth-after current) 0)
-       	      0
-       	      (* (/ (- nth-after parameter)
-       		    (- nth-after current))
-       		 (b-spline-basis knot-data (1- degree) (1+ family) parameter offset))))))))
+	      0
+	      (* (/ (- parameter before)
+		    (- nth-after-1 before))
+		 (b-spline-basis knot-data (1- degree) family parameter offset)))
+	  (if (equivalent (- nth-after current) 0)
+	      0
+	      (* (/ (- nth-after parameter)
+		    (- nth-after current))
+		 (b-spline-basis knot-data (1- degree) (1+ family) parameter offset))))))))
 
 
 (defun test-3-3 (u)
