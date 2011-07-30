@@ -412,34 +412,41 @@ geometry points, or enought points."))
 
   (make-instance 'lm:b-spline :degree 3 :points *list-of-points* :uniform t)
 
+  A non-uniform parameterisation that attempts to equalise the
+  distance travelled over parameter sections is chord length parameterisation:
+  (make-instance 'lm:b-spline :degree 3 :points *list-of-points* :uniform t)
+
   Knots may be specified with the :knots argument, and should be
   constructed using lm:MAKE-KNOTS."))
 
-(defmethod initialize-instance :after ((spline b-spline) &key uniform)
+(defmethod initialize-instance :after ((spline b-spline) &key uniform chord-length)
   "UNIFORM: if true, will automatically create a set of uniform knots,
   based on the b-spline's degree and number of points in the b-spline
   polygon."
   (with-accessors ((points b-spline-points)
 		   (degree b-spline-degree)) spline
-    (when uniform
-      (let ((num-knots (number-needed-knots (length points) degree)))
+    (let ((num-knots (number-needed-knots (length points) degree)))
+      (when uniform
 	(setf (b-spline-knots spline)
 	      (make-knots (loop
 			     repeat num-knots
 			     for i from (- degree)
 			     collect i)
-			  (loop
-			     repeat num-knots
-			     collect 1)
-			  :add-phantoms nil))))
-    (when (null (b-spline-knots spline))
-      (error 'l-math-error
-	     :format-control "No knots have been provided, or requested to be generated (eg, see :uniform keyword)"))
-    (when (< (knot-count (b-spline-knots spline))
-	     (number-needed-knots (length points) degree))
-      (format t "Knot-count: ~A~%" (knot-count (b-spline-knots spline)))
-      (error 'l-math-error :format-control "This spline requires at least ~A knots."
-	     :format-arguments (list (number-needed-knots (length points) degree))))))
+			  :add-phantoms nil)))
+      (when chord-length
+	(setf (b-spline-knots spline)
+	      (make-knots (chord-length-parameterisation points degree))))
+      (when (and uniform chord-length)
+	(error 'l-math-error
+	       :format-control "Two different methods have been requested to produce knots."))
+      (when (null (b-spline-knots spline))
+	(error 'l-math-error
+	       :format-control "No knots have been provided, or requested to be generated (eg, see :uniform keyword)"))
+      (when (< (knot-count (b-spline-knots spline))
+	       num-knots)
+	(format t "Knot-count: ~A~%" (knot-count (b-spline-knots spline)))
+	(error 'l-math-error :format-control "This spline requires at least ~A knots."
+	       :format-arguments (list num-knots))))))
 
 (defmethod minimum-parameter ((spline b-spline))
     (low-parameter (b-spline-knots spline) (b-spline-degree spline)))
