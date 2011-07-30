@@ -42,7 +42,7 @@
 
 (defsystem :l-math
     :description "A simple math library focused on linear algebra."
-    :version "0.3.2"
+    :version "0.4.0"
     :author "Rudolph Neeser <rudy.neeser@gmail.com>"
     :license "GPLv3 with Classpath Exception" 
     :components ((:file "package")
@@ -60,5 +60,6 @@
 		 (:file "interpolate")
 		 (:file "random")
 		 (:file "basis")
-		 (:file "spline"))
+		 (:file "spline")
+		 (:file "spline-interpolation"))
     :serial t)

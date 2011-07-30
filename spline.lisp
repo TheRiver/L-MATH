@@ -447,15 +447,31 @@ geometry points, or enought points."))
 (defmethod maximum-parameter ((spline b-spline))
     (high-parameter (b-spline-knots spline) (b-spline-degree spline)))
 
+
+(defmethod all-knots ((spline b-spline))
+  "Returns a list of all the knots (repeated if necessary for
+multiplicity) of the b-spline"
+  (all-knots (b-spline-knots spline)))
+
+(defgeneric domain-knots (spline)
+  (:documentation "Returns a list of the domain knots of the
+  spline (the knots over which the spline is defined). These are
+  repeated for multiplicities.")
+  (:method ((spline b-spline))
+    (with-accessors ((degree b-spline-degree)) spline
+      (nbutlast (nthcdr degree (all-knots spline)) degree))))
+
 (defmethod print-object ((spline b-spline) stream)
   (print-unreadable-object (spline stream :type t :identity t)
     (format stream "parameter in [~A, ~A]"
 	    (minimum-parameter spline)
 	    (maximum-parameter spline))))
 
-
 (defmethod spline-geometry ((spline b-spline))
   (b-spline-points spline))
+
+(defmethod get-ith-knot ((spline b-spline) (i integer) &optional (offset (b-spline-degree spline)))
+  (get-ith-knot (b-spline-knots spline) i offset))
 
 (defmethod set-spline-geometry ((spline b-spline) (geometry list))
   "A list of points defining the spline's b-spline polygon."

@@ -212,8 +212,8 @@ false."
 								       multiplicity)))))
 
 (defgeneric all-knots (knots)
-  (:documentation "Given a knots data structure, this will list all
-  knots, including multiplicities.")
+  (:documentation "Given a knots data structure, this will return a
+  list of all knots, including multiplicities.")
   (:method ((knots-data b-spline-knots))
     (with-accessors ((knots knots)
 		     (multiplicity multiplicity)) knots-data
