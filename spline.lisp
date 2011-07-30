@@ -405,7 +405,15 @@ geometry points, or enought points."))
   (:documentation "A non-uniform b-spline implementation. It has much
   code to speed up the uniform quadratic and cubic cases, however. But
   it supports arbitrary degree non-uniform b-splines in an arbtirary
-  n-dimensional space."))
+  n-dimensional space.
+
+  There are a number of options when constructing a b-spline. The
+  simplest is when constructing a uniform b-spline, like so:
+
+  (make-instance 'lm:b-spline :degree 3 :points *list-of-points* :uniform t)
+
+  Knots may be specified with the :knots argument, and should be
+  constructed using lm:MAKE-KNOTS."))
 
 (defmethod initialize-instance :after ((spline b-spline) &key uniform)
   "UNIFORM: if true, will automatically create a set of uniform knots,

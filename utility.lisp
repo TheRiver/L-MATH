@@ -192,14 +192,15 @@ create it using CREATE-BERNSTEIN-POLYNOMIAL."
 knots to the beginning and end of the sequence, unless ADD-PHANTOMS is
 false."
   (declare (type list knots multiplicity))
-  (let ((knots (if add-phantoms
-		   (append (cons (1- (first knots)) knots)
-			   (list (1+ (first (last knots)))))
-		   knots))
-	(multiplicity (if add-phantoms
-			  (append (cons 1 multiplicity)
-				  (list 1))
-			  multiplicity)))
+  (let* ((distance (- (second knots) (first knots)))
+	 (knots (if add-phantoms
+		    (append (cons (- (first knots) distance) knots)
+			    (list (+ (first (last knots)) distance)))
+		    knots))
+	 (multiplicity (if add-phantoms
+			   (append (cons 1 multiplicity)
+				   (list 1))
+			   multiplicity)))
     (make-instance 'b-spline-knots
 		   :knots  (make-array (length knots) :element-type 'double-float
 				       :initial-contents (mapcar #'(lambda (knot)
@@ -320,7 +321,8 @@ specifies which of the basis functions should be called."
 	   0))
       ((and fast-spline-index
 	    (uniform-p knot-data)
-	    (= degree 2))
+	    (= degree 2)
+	    (equivalent (abs (- current before)) 1))
        ;; Some code to speed up the quadratic case. First, we need
        ;; to shift the parameter to begin at 0.
        (let ((u (abs (second (multiple-value-list (truncate parameter))))))
@@ -330,7 +332,8 @@ specifies which of the basis functions should be called."
       	   (0 (+ 1/2 (- u) (* 1/2 (expt u 2)))))))
       ((and fast-spline-index
 	    (uniform-p knot-data)
-      	    (= degree 3))
+      	    (= degree 3)
+	    (equivalent (abs (- current before)) 1))
        ;; Some code to speed up the quadratic case. First, we need
        ;; to shift the parameter to begin at 0.
        (let ((u (abs (second (multiple-value-list (truncate parameter))))))
