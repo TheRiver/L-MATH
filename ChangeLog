@@ -1,3 +1,18 @@
+2011-07-30  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* spline.lisp (initialize-instance): Added chord length
+	parameterisation, a non-uniform parameterisation.
+
+	* basis.lisp: Moved the b-spline basis code into basis.lisp from
+	utility.lisp.
+
+	* spline-interpolation.lisp (spline-interpolation): Added a method
+	that will take a series of points and return a b-spline that
+	interpolates all of the points.
+
+	* l-math.asd (:l-math): bumped the version number in preparation
+	for a release.
+
 2011-07-29  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* utility.lisp (b-spline-knots): The knot data structure now

@@ -405,33 +405,48 @@ geometry points, or enought points."))
   (:documentation "A non-uniform b-spline implementation. It has much
   code to speed up the uniform quadratic and cubic cases, however. But
   it supports arbitrary degree non-uniform b-splines in an arbtirary
-  n-dimensional space."))
+  n-dimensional space.
 
-(defmethod initialize-instance :after ((spline b-spline) &key uniform)
+  There are a number of options when constructing a b-spline. The
+  simplest is when constructing a uniform b-spline, like so:
+
+  (make-instance 'lm:b-spline :degree 3 :points *list-of-points* :uniform t)
+
+  A non-uniform parameterisation that attempts to equalise the
+  distance travelled over parameter sections is chord length parameterisation:
+  (make-instance 'lm:b-spline :degree 3 :points *list-of-points* :uniform t)
+
+  Knots may be specified with the :knots argument, and should be
+  constructed using lm:MAKE-KNOTS."))
+
+(defmethod initialize-instance :after ((spline b-spline) &key uniform chord-length)
   "UNIFORM: if true, will automatically create a set of uniform knots,
   based on the b-spline's degree and number of points in the b-spline
   polygon."
   (with-accessors ((points b-spline-points)
 		   (degree b-spline-degree)) spline
-    (when uniform
-      (let ((num-knots (number-needed-knots (length points) degree)))
+    (let ((num-knots (number-needed-knots (length points) degree)))
+      (when uniform
 	(setf (b-spline-knots spline)
 	      (make-knots (loop
 			     repeat num-knots
 			     for i from (- degree)
 			     collect i)
-			  (loop
-			     repeat num-knots
-			     collect 1)
-			  :add-phantoms nil))))
-    (when (null (b-spline-knots spline))
-      (error 'l-math-error
-	     :format-control "No knots have been provided, or requested to be generated (eg, see :uniform keyword)"))
-    (when (< (knot-count (b-spline-knots spline))
-	     (number-needed-knots (length points) degree))
-      (format t "Knot-count: ~A~%" (knot-count (b-spline-knots spline)))
-      (error 'l-math-error :format-control "This spline requires at least ~A knots."
-	     :format-arguments (list (number-needed-knots (length points) degree))))))
+			  :add-phantoms nil)))
+      (when chord-length
+	(setf (b-spline-knots spline)
+	      (make-knots (chord-length-parameterisation points degree))))
+      (when (and uniform chord-length)
+	(error 'l-math-error
+	       :format-control "Two different methods have been requested to produce knots."))
+      (when (null (b-spline-knots spline))
+	(error 'l-math-error
+	       :format-control "No knots have been provided, or requested to be generated (eg, see :uniform keyword)"))
+      (when (< (knot-count (b-spline-knots spline))
+	       num-knots)
+	(format t "Knot-count: ~A~%" (knot-count (b-spline-knots spline)))
+	(error 'l-math-error :format-control "This spline requires at least ~A knots."
+	       :format-arguments (list num-knots))))))
 
 (defmethod minimum-parameter ((spline b-spline))
     (low-parameter (b-spline-knots spline) (b-spline-degree spline)))
@@ -439,15 +454,31 @@ geometry points, or enought points."))
 (defmethod maximum-parameter ((spline b-spline))
     (high-parameter (b-spline-knots spline) (b-spline-degree spline)))
 
+
+(defmethod all-knots ((spline b-spline))
+  "Returns a list of all the knots (repeated if necessary for
+multiplicity) of the b-spline"
+  (all-knots (b-spline-knots spline)))
+
+(defgeneric domain-knots (spline)
+  (:documentation "Returns a list of the domain knots of the
+  spline (the knots over which the spline is defined). These are
+  repeated for multiplicities.")
+  (:method ((spline b-spline))
+    (with-accessors ((degree b-spline-degree)) spline
+      (nbutlast (nthcdr degree (all-knots spline)) degree))))
+
 (defmethod print-object ((spline b-spline) stream)
   (print-unreadable-object (spline stream :type t :identity t)
     (format stream "parameter in [~A, ~A]"
 	    (minimum-parameter spline)
 	    (maximum-parameter spline))))
 
-
 (defmethod spline-geometry ((spline b-spline))
   (b-spline-points spline))
+
+(defmethod get-ith-knot ((spline b-spline) (i integer) &optional (offset (b-spline-degree spline)))
+  (get-ith-knot (b-spline-knots spline) i offset))
 
 (defmethod set-spline-geometry ((spline b-spline) (geometry list))
   "A list of points defining the spline's b-spline polygon."

@@ -104,6 +104,7 @@
 	   #:zero-length-error
 	   #:linear-interpolation
 	   #:bilinear-interpolation
+	   #:spline-interpolation
 	   #:between
 	   #:normal
 	   #:uniform
@@ -128,6 +129,8 @@
 	   #:catmull-rom-spline
 	   #:b-spline
 	   #:b-spline-knots
+	   #:all-knots
+	   #:domain-knots
 	   #:b-spline-degree
 	   ; Utilities
 	   #:factorial
