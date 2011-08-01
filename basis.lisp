@@ -319,8 +319,13 @@ specifies which of the basis functions should be called."
 		    (- nth-after current))
 		 (b-spline-basis knot-data (1- degree) (1+ family) parameter :offset offset))))))))
 
-(defun chord-length-parameterisation (all-points degree)
-  "Produces a non-parameteric parameterisation for b-splines."
+
+(defun ratio-parameterisation (all-points degree function)
+  "This can be used to determine a knot sequence based on some
+  'distance' between the given points. The distance is measured using
+  FUNCTION, which should be a binary function returning a real. If
+  this function is the euclidean distance metric, then this will
+  produce chord-length parametrisation."
   (cond
     ((= (length all-points) (1+ degree))
      (list -3 -1 0 1 2 3))
@@ -330,11 +335,11 @@ specifies which of the basis functions should be called."
 		       for count from 0 below (- (length domain-points) 2)
 		       for i in domain-points
 		       for j in (rest domain-points)
-		       sum (lm:euclidean-distance i j) into sum
+		       sum (funcall function i j) into sum
 		       collecting sum into collection
 		       finally (return collection)))
 	    (last (+ (first (last result))
-		     (euclidean-distance (first (last domain-points))
+		     (funcall function (first (last domain-points))
 					 (nth (- (length domain-points) 2) domain-points))))
 	    (result (append result (list last))))
        (mapcar #'(lambda (item)
@@ -350,6 +355,21 @@ specifies which of the basis functions should be called."
 			  with distance = (- (first (last result))
 					     (first (last (butlast result))))
 			  collecting (+ last (* distance i)))))))))
+			       
+
+(defun chord-length-parameterisation (all-points degree)
+  "Produces a non-parameteric parameterisation for b-splines, where
+the ratio of parameters is equivalent to the ratio of the distances
+between the corresponding control points."
+  (ratio-parameterisation all-points degree #'euclidean-distance))
+
+
+(defun centripetal-parameterisation (all-points degree)
+  "Produces a non-parameteric parameterisation for b-splines, where
+the ratio of parameters is equivalent to the square root of the ratio
+of the distances between the corresponding control points."
+  (ratio-parameterisation all-points degree #'(lambda (i j)
+						(sqrt (euclidean-distance i j)))))
 
 ;;;-----------------------------------------------------------------------
 
