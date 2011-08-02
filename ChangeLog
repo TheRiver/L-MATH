@@ -1,3 +1,11 @@
+2011-08-02  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* spline-interpolation.lisp (spline-interpolation): Now allows for
+	closing curves.
+
+	* spline.lisp (initialize-instance): Added some better error
+	reporting.
+
 2011-08-01  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* spline-interpolation.lisp (spline-interpolation): Took out a

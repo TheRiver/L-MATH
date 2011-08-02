@@ -452,9 +452,8 @@ geometry points, or enought points."))
 	       :format-control "No knots have been provided, or requested to be generated (eg, see :uniform keyword)"))
       (when (< (knot-count (b-spline-knots spline))
 	       num-knots)
-	(format t "Knot-count: ~A~%" (knot-count (b-spline-knots spline)))
-	(error 'l-math-error :format-control "This spline requires at least ~A knots."
-	       :format-arguments (list num-knots))))))
+	(error 'l-math-error :format-control "This spline requires at least ~A knots and only has ~A."
+	       :format-arguments (list num-knots (knot-count (b-spline-knots spline))))))))
 
 (defmethod minimum-parameter ((spline b-spline))
     (low-parameter (b-spline-knots spline) (b-spline-degree spline)))
