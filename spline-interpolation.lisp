@@ -1,4 +1,3 @@
-(declaim (optimize (speed 0) (safety 3) (debug 3)))
 (in-package #:l-math)
 
 ;;; L-MATH: a library for simple linear algebra.
@@ -36,15 +35,34 @@
 ;;; do so. If you do not wish to do so, delete this exception statement
 ;;; from your version.
 
-(defgeneric spline-interpolation (points &key degree)
+(defgeneric spline-interpolation (points &key degree parametrisation close)
   (:documentation "Returns a b-spline that interpolates the given
   points. This is based on the discussion in sections 9.1 and 7.8 of
-  Farin's Curves and Surfaces for Computer Aided Geometric Design.")
-  (:method ((points list) &key (degree (dimension (first points))))
-    (let ((first-point (- (* 2 (first points))
-			  (second points)))
-	  (last-point (+ (- (nth (- (length points) 2) points))
-			 (* 2 (first (last points))))))
+  Farin's Curves and Surfaces for Computer Aided Geometric
+  Design. PARAMETRISATION should be one of :uniform, :centripetal,
+  or :chord-length. If CLOSE is true, then this will produce a closed
+  b-spline.")
+  (:method ((points list) &key
+	    (degree (dimension (first points)))
+	    (parametrisation :centripetal)
+	    close)
+    (let* ((points (if (and close	; Here we want to make sure that the points form a closed shape.
+			   (not (equivalent (first (last points))
+					    (first points))))
+		      (append points (list (first points)))
+		      points))
+	   (first-point (cond
+			  (close
+			   (nth (- (length points) 2) points))
+			  (t
+			   (- (* 2 (first points))
+			      (second points)))))
+	   (last-point (cond
+			 (close
+			  (second points))
+			 (t
+			  (+ (- (nth (- (length points) 2) points))
+			     (* 2 (first (last points))))))))
       (labels ((converge (spline)
 		 (let ((differences (mapcar #'(lambda (par point)
 						;; DIFFERENCES is the difference between the wanted
@@ -52,41 +70,27 @@
 						(- point (evaluate spline par)))
 					    (domain-knots spline)
 					    points)))
-		   (labels ((c (u u+1 u-1 u-2 u+2)
-			      (* (/ 1 (- u+1 u-1))
-			      	 (+ (* (- u+1 u)
-			      	       (/ (- u u-2)
-			      		  (- u+1 u-2)))
-			      	    (* (- u-1 u)
-			      	       (/ (- u+2 u)
-			      		  (- u+2 u-1))))))
-			    (e (v i)
-			      (let ((c (c (get-ith-knot spline i)
-					  (get-ith-knot spline (1+ i))
-					  (get-ith-knot spline (1- i))
-					  (get-ith-knot spline (- i 2))
-					  (get-ith-knot spline (+ i 2)))))
-				(cond
-				  ((equivalent 0 c)
-				   v)
-				  (t
-				   (* (/ 1 c) v))))))
-		     (cond
-		       ((some #'(lambda (value)
-				  (not (equivalent 0 (norm value))))
-			      differences)
-			;; So we know we still need to move things slightly.
-			(converge (make-instance 'b-spline
-						 :degree degree
-						 :knots (b-spline-knots spline)
-						 :points (append (cons first-point
-								       (loop
-									  for point in (rest (butlast (spline-geometry spline)))
-									  for difference in differences
-									  for i from 0
-									  collect (+ point (e difference i))))
-								 (list last-point)))))
-		       (t
-			spline))))))
-	(converge (make-instance 'b-spline :uniform t :degree degree :points (append (cons first-point points)
-										     (list last-point))))))))
+		   (cond
+		     ((some #'(lambda (value)
+				(not (equivalent 0 (norm value))))
+			    differences)
+		      ;; So we know we still need to move things slightly.
+		      (converge (make-instance 'b-spline
+					       :degree degree
+					       :knots (b-spline-knots spline)
+					       :points (append (cons first-point
+								     (loop
+									for point in (rest (butlast (spline-geometry spline)))
+									for difference in differences
+									for i from 0
+									collect (+ point difference)))
+							       (list last-point)))))
+		     (t
+		      spline)))))
+	(converge (make-instance 'b-spline
+				 :uniform (eq parametrisation :uniform)
+				 :centripetal (eq parametrisation :centripetal)
+				 :chord-length (eq parametrisation :chord-length)
+				 :degree degree
+				 :points (append (cons first-point points)
+						 (list last-point))))))))
