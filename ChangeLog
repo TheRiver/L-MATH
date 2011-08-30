@@ -1,3 +1,7 @@
+2011-08-30  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* spline.lisp (print-object): Better print out splines.
+
 2011-08-02  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* spline-interpolation.lisp (spline-interpolation): Now allows for

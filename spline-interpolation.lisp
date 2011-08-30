@@ -50,20 +50,22 @@
 			   (not (equivalent (first (last points))
 					    (first points))))
 		      (append points (list (first points)))
-		      points))
-	   (first-point (cond
-			  (close
-			   (nth (- (length points) 2) points))
-			  (t
-			   (- (* 2 (first points))
-			      (second points)))))
-	   (last-point (cond
-			 (close
-			  (second points))
-			 (t
-			  (+ (- (nth (- (length points) 2) points))
-			     (* 2 (first (last points))))))))
-      (labels ((converge (spline)
+		      points)))
+      (labels ((make-first-point (points)
+		 (cond
+		   (close
+		    (nth (- (length points) 2) points))
+		   (t
+		    (- (* 2 (first points))
+		       (second points)))))
+	       (make-last-point (points)
+		 (cond
+		   (close
+		    (second points))
+		   (t
+		    (+ (- (nth (- (length points) 2) points))
+		       (* 2 (first (last points)))))))
+	       (converge (spline)
 		 (let ((differences (mapcar #'(lambda (par point)
 						;; DIFFERENCES is the difference between the wanted
 						;; points and those the spline passes through.
@@ -75,16 +77,17 @@
 				(not (equivalent 0 (norm value))))
 			    differences)
 		      ;; So we know we still need to move things slightly.
-		      (converge (make-instance 'b-spline
-					       :degree degree
-					       :knots (b-spline-knots spline)
-					       :points (append (cons first-point
-								     (loop
-									for point in (rest (butlast (spline-geometry spline)))
-									for difference in differences
-									for i from 0
-									collect (+ point difference)))
-							       (list last-point)))))
+		      (let ((points (loop
+				       for point in (rest (butlast (spline-geometry spline)))
+				       for difference in differences
+				       for i from 0
+				       collect (+ point difference))))
+			(converge (make-instance 'b-spline
+						 :degree degree
+						 :knots (b-spline-knots spline)
+						 :points (append (cons (make-first-point points)
+								       points)
+								 (list (make-last-point points)))))))
 		     (t
 		      spline)))))
 	(converge (make-instance 'b-spline
@@ -92,5 +95,5 @@
 				 :centripetal (eq parametrisation :centripetal)
 				 :chord-length (eq parametrisation :chord-length)
 				 :degree degree
-				 :points (append (cons first-point points)
-						 (list last-point))))))))
+				 :points (append (cons (make-first-point points) points)
+						 (list (make-last-point points)))))))))

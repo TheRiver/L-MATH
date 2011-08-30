@@ -477,7 +477,9 @@ multiplicity) of the b-spline"
 
 (defmethod print-object ((spline b-spline) stream)
   (print-unreadable-object (spline stream :type t :identity t)
-    (format stream "parameter in [~A, ~A]"
+    (format stream "from ~A to ~A over [~A, ~A]"
+	    (evaluate spline (minimum-parameter spline))
+	    (evaluate spline (maximum-parameter spline))
 	    (minimum-parameter spline)
 	    (maximum-parameter spline))))
 
