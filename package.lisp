@@ -129,6 +129,7 @@
 	   #:catmull-rom-spline
 	   #:b-spline
 	   #:b-spline-knots
+	   #:b-spline-points
 	   #:all-knots
 	   #:domain-knots
 	   #:b-spline-degree

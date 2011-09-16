@@ -1,3 +1,7 @@
+2011-09-16  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* package.lisp (#:l-math): Export B-SPLINE-POINTS symbol.
+
 2011-08-30  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* spline.lisp (print-object): Better print out splines.
