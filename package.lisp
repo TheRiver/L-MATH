@@ -133,6 +133,9 @@
 	   #:all-knots
 	   #:domain-knots
 	   #:b-spline-degree
+	   ; Transformation
+	   #:transform
+	   #:summation-transformer
 	   ; Utilities
 	   #:factorial
 	   #:binomial-coefficient

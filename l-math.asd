@@ -61,5 +61,6 @@
 		 (:file "random")
 		 (:file "basis")
 		 (:file "spline")
-		 (:file "spline-interpolation"))
+		 (:file "spline-interpolation")
+		 (:file "transform"))
     :serial t)

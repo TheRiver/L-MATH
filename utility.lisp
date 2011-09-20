@@ -86,13 +86,11 @@
   (cond
     ((and (zerop n)
 	  (zerop i))
-     (format t "Both zero~%")
      #'(lambda (t-val)
 	 (declare (ignore t-val))
 	 1))
     ((or (minusp i)
 	 (> i n))
-     (format t "out of range.~%")
      #'(lambda (t-val)
 	 (declare (ignore t-val))
 	 0))

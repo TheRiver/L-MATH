@@ -1,3 +1,16 @@
+2011-09-20  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* transform.lisp (summation-transformer): Returns a function
+	that will its arguments together.
+
+2011-09-17  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* transform.lisp: Added a file for code handling transformations
+	of other objects.
+	(transform): A generic method for transforming objects. Have added
+	a version to handle lists, functions as transformers, vectors and
+	splines.
+
 2011-09-16  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* package.lisp (#:l-math): Export B-SPLINE-POINTS symbol.
