@@ -240,7 +240,9 @@ between them:
 (lm:linear-interpolation 0 100 0.5) => 50.0
 ```
 
+```lisp
 (lm:between START END)
+```
 Returns the vector exactly between the VECTORs START and END.
 
 
