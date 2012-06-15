@@ -144,7 +144,7 @@ real-valued components must be within *equivalence-tolerance* of each
 other.
 
 ```lisp
-(lm:matrix-rows MATRIX)(lm:matrix-cols MATRIX)
+(lm:matrix-rows MATRIX) (lm:matrix-cols MATRIX)
 ```
 Returns the number of rows and columns in the matrix.
 
@@ -264,7 +264,7 @@ VECTOR= and MATRIX=.
 Returns a copy of the given VECTOR, MATRIX or list.
 
 ```lisp
-(lm:negate OBJECT)(lm:negate! OBJECT)
+(lm:negate OBJECT) (lm:negate! OBJECT)
 ```
 Returns the arithmetic inverse of the given object. NEGATE! does so
 destructively. Example:
@@ -347,7 +347,7 @@ ASDF-INSTALL and QUICKLISP:
 (require 'asdf-install)
 (asdf-install:install 'l-math)
 
-(quicklisp:quickload 'cl-heap)
+(quicklisp:quickload 'l-math)
 ```
 
 Reporting Bugs
