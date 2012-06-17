@@ -3,8 +3,24 @@ L-MATH
 
 L-MATH is a library for performing simple linear algebra. Vector and
 matrix classes are available, as are simple linear interpolation
-functions and various operations related to creating rotation
-matrices.
+functions, spline-based interpolations (Catmull-Rom and B-Spline
+methods), and various operations related to creating rotation matrices.
+
+L-MATH also contains various spline implementations, including those
+implemented using matrices:
+
+* Hermite curves
+* Cubic Beziér curves
+* Uniform, non-rational B-Splines
+* Catmull-Rom splines
+
+There are also general splines that are calculated using recurrence
+formulae (which is generally a more stable approach than using
+matrices), such as:
+
+* General Beziér curves of arbitrary degree
+* Non-Rational B-Splines, including uniform and non-uniform
+  parametrisations.
 
 Vector
 ------
