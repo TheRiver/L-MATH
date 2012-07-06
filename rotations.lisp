@@ -2,6 +2,7 @@
 
 ;;; L-MATH: a library for simple linear algebra.
 ;;; Copyright (C) 2009-2011 Rudolph Neeser
+;;; Copyright (C) 2012 L-MATH (See AUTHORS file)
 ;;;
 ;;; This program is free software: you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -43,7 +44,7 @@
 (defun to-degrees (radians)
   (cl:* radians (cl:/ 180 pi)))
 
-(defun roll-matrix (size angle)
+(defun rotation-z (size angle)
   "Creates a matrix that rotates around the z-axis by the given angle,
 in radians. This is a left-handed rotation."
   (check-type size (integer 3 4) "an integer of value 3 or 4")
@@ -54,6 +55,9 @@ in radians. This is a left-handed rotation."
 	  (matrix-elt matrix 1 1) (cos angle))
     matrix))
 
+(defun roll-matrix (size angle)
+  (rotation-z size angle))
+
 (defun roll-by (vector angle)
   "Returns the given vector after it has undergone a roll by the given
   angle, specified in radians. This is a left-handed rotation."
@@ -62,7 +66,7 @@ in radians. This is a left-handed rotation."
   (* (roll-matrix (length vector) angle) vector))
 
 
-(defun yaw-matrix (size angle)
+(defun rotation-y (size angle)
   "Creates a matrix that rotates around the y-axis by the given angle,
 given in radians. This is a left-handed rotation"
   (check-type size (integer 3 4) "an integer of value 3 or 4")
@@ -73,6 +77,9 @@ given in radians. This is a left-handed rotation"
 	  (matrix-elt matrix 2 2) (cos angle))
     matrix))
 
+(defun yaw-matrix (size angle)
+  (rotation-y size angle))
+
 (defun yaw-by (vector angle)
   "Returns the given vector after it has undergone a yaw by the given
   angle, specified in radians. This is a left-handed rotation."
@@ -80,7 +87,7 @@ given in radians. This is a left-handed rotation"
   (check-type angle real)
   (* (yaw-matrix (length vector) angle) vector))
 
-(defun pitch-matrix (size angle)
+(defun rotation-x (size angle)
   "Creates a matrix that rotates around the x-axis by the given angle,
 given in radians. This is a left-handed rotation."
   (check-type size (integer 3 4) "an integer of value 3 or 4")
@@ -90,6 +97,9 @@ given in radians. This is a left-handed rotation."
 	  (matrix-elt matrix 2 1) (sin angle)
 	  (matrix-elt matrix 2 2) (cos angle))
     matrix))
+
+(defun pitch-matrix (size angle)
+  (rotation-x size angle))
 
 (defun pitch-by (vector angle)
   "Returns the given vector after it has undergone a pitch by the given
@@ -145,6 +155,25 @@ to the vector TO-VIEW, using WORLD-UP as the coordinate system's
 vectors."
   (* (create-rotation-from-view to-view world-up)
      (transpose (create-rotation-from-view from-view world-up))))
-    
 
+;;;-------------------------------------------------------
+
+(defparameter *rotation-naming-conventions*
+  '((:standard-cartesian ((roll-matrix rotation-x) 
+			  (pitch-matrix rotation-y)
+			  (yaw-matrix rotation-z)))
+    (:camera ((roll-matrix rotation-z)		
+	      (pitch-matrix rotation-x)
+	      (yaw-matrix rotation-y)))))
+
+(defun set-rotation-naming-convention (convention) 
+  (check-type convention keyword)
+  (let ((mapping (second (assoc convention *rotation-naming-conventions*))))
+    (unless mapping
+      (error 'l-math-error
+	     :format-arguments (list convention)
+	     :format-control "Unknown naming convention ~a"))
+    (dolist (m mapping)
+      (setf (symbol-function (first m))
+	    (symbol-function (second m))))))
 

@@ -1,3 +1,16 @@
+2012-07-06  Rudy Neeser  <rudy.neeser@gmail.com>
+
+	* rotations.lisp (rotation-z): Renamed ROLL-MATRIX.
+	(roll-matrix): A synonym for ROTATION-Z
+	(rotation-y): Renamed YAW-MATRIX
+	(yaw-matrix): A synonym for ROTATION-Y
+	(rotation-x): Renamed PITCH-MATRIX
+	(pitch-matrix): A synonym for ROTATION-X
+	(*rotation-naming-conventions*): Provides various mappings between
+	the roll/pitch/yaw functions, and rotations.
+	(set-rotation-naming-convention): Rebinds the roll/pitch/yaw
+	functions to the different axes.
+
 2012-06-11  Rudy Neeser  <rudy.neeser@gmail.com>
 
 	* README: Renamed to README.md

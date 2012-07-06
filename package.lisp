@@ -1,5 +1,6 @@
 ;;; L-MATH: a library for simple linear algebra.
 ;;; Copyright (C) 2009-2011 Rudolph Neeser
+;;; Copyright (C) 2012 L-MATH (See AUTHORS file)
 ;;;
 ;;; This program is free software: you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -86,11 +87,16 @@
 	   #:-
 	   #:+
 	   #:yaw-matrix
+	   #:rotation-x
+	   #:rotation-y
+	   #:rotation-z
 	   #:pitch-matrix
 	   #:roll-matrix
 	   #:yaw-by
 	   #:pitch-by
 	   #:roll-by
+	   #:*rotation-naming-conventions*
+	   #:set-rotation-naming-convention
 	   #:create-rotation-matrix
 	   #:create-rotation-from-view
 	   #:create-rotation-from-view-to-view

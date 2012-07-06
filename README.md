@@ -197,6 +197,13 @@ around the x-axis. It is a left-handed rotation. The ANGLE is given in
 radians. SIZE should be either 3 or 4.
 
 ```lisp
+(lm:set-rotation-naming-convention CONVENTION)
+```
+Rebinds YAW-MATRIX, PITCH-MATRIX, and ROLL-MATRIX to rotate around
+different axes. The available conventions are provided in
+lm:*rotation-naming-conventions*
+
+```lisp
 (lm:create-rotation-matrix VIEW RIGHT UP &optional (SIZE 3))
 ```
 Creates a rotation matrix from three vectors. VIEW is the direction
@@ -227,6 +234,8 @@ direction. This is a left-handed rotation. Example:
 	   (lm:* rotation (lm:vector 1 0 0)))
 => #<L-MATH:VECTOR 0.000 1.000 0.000 >
 ```
+
+
 
 Interpolation
 -------------
