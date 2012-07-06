@@ -1,5 +1,8 @@
 2012-07-06  Rudy Neeser  <rudy.neeser@gmail.com>
 
+	* spline-interpolation.lisp (spline-interpolation): Added some
+	error checking for unwanted lists.
+
 	* rotations.lisp (rotation-z): Renamed ROLL-MATRIX.
 	(roll-matrix): A synonym for ROTATION-Z
 	(rotation-y): Renamed YAW-MATRIX

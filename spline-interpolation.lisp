@@ -46,6 +46,9 @@
 	    (degree (dimension (first points)))
 	    (parametrisation :centripetal)
 	    close)
+    (when (or (null points)
+	      (null (second points)))
+      (error 'l-math-error :format-control "There must be two or more points in order to interpolate."))
     (let* ((points (if (and close	; Here we want to make sure that the points form a closed shape.
 			   (not (equivalent (first (last points))
 					    (first points))))
