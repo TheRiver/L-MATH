@@ -56,6 +56,8 @@ in radians. This is a left-handed rotation."
     matrix))
 
 (defun roll-matrix (size angle)
+  "A synonym for ROTATION-Z, although this can be changed using
+lm:SET-ROTATION-NAMING-CONVENTION."
   (rotation-z size angle))
 
 (defun roll-by (vector angle)
@@ -78,6 +80,8 @@ given in radians. This is a left-handed rotation"
     matrix))
 
 (defun yaw-matrix (size angle)
+    "A synonym for ROTATION-Y, although this can be changed using
+lm:SET-ROTATION-NAMING-CONVENTION."
   (rotation-y size angle))
 
 (defun yaw-by (vector angle)
@@ -99,6 +103,8 @@ given in radians. This is a left-handed rotation."
     matrix))
 
 (defun pitch-matrix (size angle)
+    "A synonym for ROTATION-X, although this can be changed using
+lm:SET-ROTATION-NAMING-CONVENTION."
   (rotation-x size angle))
 
 (defun pitch-by (vector angle)
@@ -164,9 +170,14 @@ vectors."
 			  (yaw-matrix rotation-z)))
     (:camera ((roll-matrix rotation-z)		
 	      (pitch-matrix rotation-x)
-	      (yaw-matrix rotation-y)))))
+	      (yaw-matrix rotation-y))))
+  "Defines the various mappings possible between ROLL-MATRIX,
+  PITCH-MATRIX, YAW-MATRIX, and the different axes.")
 
-(defun set-rotation-naming-convention (convention) 
+(defun set-rotation-naming-convention (convention)
+  "Changes the mappings between ROLL-MATRIX, PITCH-MATRIX and
+  YAW-MATRIX and the axes. See lm:*rotation-naming-conventions* to see
+  what conventions are possible."
   (check-type convention keyword)
   (let ((mapping (second (assoc convention *rotation-naming-conventions*))))
     (unless mapping
