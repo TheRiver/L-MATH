@@ -201,7 +201,7 @@ radians. SIZE should be either 3 or 4.
 ```
 Rebinds YAW-MATRIX, PITCH-MATRIX, and ROLL-MATRIX to rotate around
 different axes. The available conventions are provided in
-lm:*rotation-naming-conventions*
+*lm:\*rotation-naming-conventions\**
 
 ```lisp
 (lm:create-rotation-matrix VIEW RIGHT UP &optional (SIZE 3))
