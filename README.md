@@ -22,6 +22,13 @@ matrices), such as:
 * Non-Rational B-Splines, including uniform and non-uniform
   parametrisations.
 
+In addition, L-MATH contains various functions for creating random
+data, including:
+
+* uniformly distributed random numbers and vectors
+* normal distribution of random numbers and vectors
+* Perlin noise.
+
 Vector
 ------
 
