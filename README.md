@@ -1,6 +1,8 @@
 L-MATH
 ======
 
+This library is no longer maintained. 
+
 L-MATH is a library for performing simple linear algebra. Vector and
 matrix classes are available, as are simple linear interpolation
 functions, spline-based interpolations (Catmull-Rom and B-Spline
